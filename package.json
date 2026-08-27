@@ -4,6 +4,9 @@
   "private": true,
   "description": "CampusBites - campus food ordering demo for University of Africa, Toru-Orua",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "seed": "node data/seed.js",

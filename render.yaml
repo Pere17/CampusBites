@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: campusbites
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build:css
+    startCommand: npm start
+    envVars:
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: NODE_VERSION
+        value: 20
+    disk:
+      name: campusbites-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
