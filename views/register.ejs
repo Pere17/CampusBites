@@ -1,0 +1,167 @@
+<%- include('partials/header') %>
+
+<div class="grid lg:grid-cols-2 gap-10 items-center max-w-5xl mx-auto">
+
+  <div class="hidden lg:block animate-fade-up">
+    <div class="relative">
+      <div class="absolute -top-10 -left-10 w-64 h-64 bg-accent/20 rounded-full blur-3xl"></div>
+      <div class="relative">
+        <span class="badge bg-accent/10 text-accent border border-accent/30 mb-5">
+          <i data-lucide="sparkles" style="width:13px;height:13px"></i> Join CampusBites
+        </span>
+        <h1 class="font-display text-4xl font-bold text-ink leading-tight mb-4">Create your account in seconds.</h1>
+        <p class="text-ink2 mb-8 max-w-sm leading-relaxed">Whether you're hungry between classes or running a food hustle, CampusBites gets you set up fast.</p>
+        <ul class="space-y-4">
+          <li class="flex items-center gap-3 text-sm text-ink2">
+            <span class="w-9 h-9 rounded-xl bg-surface border border-line flex items-center justify-center text-primary"><i data-lucide="graduation-cap" style="width:16px;height:16px"></i></span>
+            Students order from any campus vendor
+          </li>
+          <li class="flex items-center gap-3 text-sm text-ink2">
+            <span class="w-9 h-9 rounded-xl bg-surface border border-line flex items-center justify-center text-accent"><i data-lucide="chef-hat" style="width:16px;height:16px"></i></span>
+            Vendors manage orders from a live dashboard
+          </li>
+          <li class="flex items-center gap-3 text-sm text-ink2">
+            <span class="w-9 h-9 rounded-xl bg-surface border border-line flex items-center justify-center text-success"><i data-lucide="shield-check" style="width:16px;height:16px"></i></span>
+            Vendor accounts are reviewed before going live
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-soft p-7 sm:p-9 animate-fade-up w-full max-w-md mx-auto lg:mx-0">
+    <h1 class="font-display text-2xl font-bold text-ink mb-1">Create an account</h1>
+    <p class="text-sm text-ink3 mb-6">It only takes a minute.</p>
+
+    <% if (error) { %>
+      <div class="flex items-start gap-2.5 bg-danger/10 border border-danger/30 text-danger text-sm rounded-xl p-3.5 mb-5">
+        <i data-lucide="alert-circle" style="width:17px;height:17px" class="mt-0.5 shrink-0"></i>
+        <span><%= error %></span>
+      </div>
+    <% } %>
+
+    <form action="/register" method="POST" class="space-y-4" id="registerForm">
+      <div>
+        <label class="field-label">I am a...</label>
+        <div class="grid grid-cols-2 gap-2 p-1 bg-surface rounded-xl border border-line">
+          <label class="cursor-pointer">
+            <input type="radio" name="role" value="student" checked class="peer sr-only" onchange="toggleVendorFields()" />
+            <div class="text-center text-sm font-medium py-2 rounded-lg text-ink2 peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5">
+              <i data-lucide="graduation-cap" style="width:15px;height:15px"></i> Student
+            </div>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="role" value="vendor" class="peer sr-only" onchange="toggleVendorFields()" />
+            <div class="text-center text-sm font-medium py-2 rounded-lg text-ink2 peer-checked:bg-primary peer-checked:text-white peer-checked:shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5">
+              <i data-lucide="chef-hat" style="width:15px;height:15px"></i> Vendor
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label class="field-label" for="name">Full name</label>
+        <div class="relative">
+          <i data-lucide="user" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink3" style="width:16px;height:16px"></i>
+          <input id="name" name="name" required autocomplete="name" placeholder="Jane Doe" class="input-field" />
+        </div>
+      </div>
+
+      <div>
+        <label class="field-label" for="regEmail">Email</label>
+        <div class="relative">
+          <i data-lucide="mail" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink3" style="width:16px;height:16px"></i>
+          <input id="regEmail" type="email" name="email" required autocomplete="email" placeholder="you@campusbites.uat" class="input-field !pr-11" oninput="validateEmail(this)" />
+          <i id="emailCheck" data-lucide="check-circle-2" class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-success" style="width:16px;height:16px"></i>
+        </div>
+      </div>
+
+      <div>
+        <label class="field-label" for="regPassword">Password</label>
+        <div class="relative">
+          <i data-lucide="lock" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink3" style="width:16px;height:16px"></i>
+          <input id="regPassword" type="password" name="password" required autocomplete="new-password" placeholder="At least 6 characters" class="input-field !pr-11" oninput="updateStrength(this.value)" />
+          <button type="button" onclick="togglePassword('regPassword', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink3 hover:text-ink2" aria-label="Show password">
+            <i data-lucide="eye" style="width:16px;height:16px"></i>
+          </button>
+        </div>
+        <div class="flex gap-1.5 mt-2" id="strengthBar">
+          <span class="h-1 flex-1 rounded-full bg-line transition-colors duration-200"></span>
+          <span class="h-1 flex-1 rounded-full bg-line transition-colors duration-200"></span>
+          <span class="h-1 flex-1 rounded-full bg-line transition-colors duration-200"></span>
+          <span class="h-1 flex-1 rounded-full bg-line transition-colors duration-200"></span>
+        </div>
+        <p class="text-xs text-ink3 mt-1" id="strengthLabel">Password strength</p>
+      </div>
+
+      <div id="vendorFields" class="hidden space-y-4 border-t border-line pt-4">
+        <div>
+          <label class="field-label" for="businessName">Business / hustle name</label>
+          <div class="relative">
+            <i data-lucide="store" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink3" style="width:16px;height:16px"></i>
+            <input id="businessName" name="businessName" class="input-field" placeholder="e.g. Bola's Snack Corner" />
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="description">Short description</label>
+          <div class="relative">
+            <i data-lucide="notebook-pen" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink3" style="width:16px;height:16px"></i>
+            <input id="description" name="description" class="input-field" placeholder="What do you sell?" />
+          </div>
+        </div>
+        <p class="text-xs text-ink3 flex items-start gap-1.5"><i data-lucide="info" style="width:13px;height:13px" class="mt-0.5 shrink-0"></i> Vendor accounts require admin approval before you can receive orders.</p>
+      </div>
+
+      <button type="submit" id="registerBtn" class="btn-primary w-full">
+        <span id="registerBtnText">Create account</span>
+      </button>
+    </form>
+
+    <p class="text-sm text-ink3 mt-5 text-center">Already have an account? <a href="/login" class="text-primary hover:text-primary-hover font-medium">Login</a></p>
+  </div>
+</div>
+
+<script>
+  function toggleVendorFields() {
+    const isVendor = document.querySelector('input[name="role"]:checked').value === 'vendor';
+    document.getElementById('vendorFields').classList.toggle('hidden', !isVendor);
+  }
+
+  function togglePassword(id, btn) {
+    const input = document.getElementById(id);
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.innerHTML = `<i data-lucide="${isHidden ? 'eye-off' : 'eye'}" style="width:16px;height:16px"></i>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function validateEmail(input) {
+    const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+    document.getElementById('emailCheck').classList.toggle('hidden', !ok);
+  }
+
+  function updateStrength(value) {
+    const bars = document.querySelectorAll('#strengthBar span');
+    const label = document.getElementById('strengthLabel');
+    let score = 0;
+    if (value.length >= 6) score++;
+    if (value.length >= 10) score++;
+    if (/[A-Z]/.test(value) && /[a-z]/.test(value)) score++;
+    if (/[0-9]/.test(value) && /[^A-Za-z0-9]/.test(value)) score++;
+
+    const colors = ['bg-line', 'bg-danger', 'bg-accent', 'bg-accent', 'bg-success'];
+    const labels = ['Password strength', 'Weak', 'Fair', 'Good', 'Strong'];
+    bars.forEach((bar, i) => {
+      bar.className = `h-1 flex-1 rounded-full transition-colors duration-200 ${i < score ? colors[score] : 'bg-line'}`;
+    });
+    label.textContent = value.length === 0 ? 'Password strength' : labels[score];
+  }
+
+  document.getElementById('registerForm').addEventListener('submit', function () {
+    const btn = document.getElementById('registerBtn');
+    btn.disabled = true;
+    document.getElementById('registerBtnText').innerHTML = '<span class="spinner"></span> Creating account…';
+  });
+</script>
+
+<%- include('partials/footer') %>

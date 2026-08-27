@@ -1,0 +1,24 @@
+user_id,full_name,email,role,status,date_registered
+1,Admin,admin@campusbites.uat,admin,active,2026-08-08T11:40:08.460Z
+2,Just Tools Owner,justtools@campusbites.uat,vendor,active,2026-08-08T11:40:08.493Z
+3,Lari's Kitchen Owner,lariskitchen@campusbites.uat,vendor,active,2026-08-08T11:40:08.525Z
+4,F & S Owner,fands@campusbites.uat,vendor,active,2026-08-08T11:40:08.559Z
+5,Suya Spot Owner,suyaspot@campusbites.uat,vendor,active,2026-08-08T11:40:08.592Z
+6,Golden Crust Bakery Owner,goldencrust@campusbites.uat,vendor,active,2026-08-08T11:40:08.626Z
+7,Mama Ngozi's Kitchen Owner,mamangozi@campusbites.uat,vendor,active,2026-08-08T11:40:08.659Z
+8,Campus Brew & Smoothies Owner,campusbrew@campusbites.uat,vendor,active,2026-08-08T11:40:08.691Z
+9,Iya Basira Rice Spot Owner,iyabasira@campusbites.uat,vendor,active,2026-08-08T11:40:08.723Z
+10,Bola (Snack Hustle),bolasnacks@campusbites.uat,vendor,active,2026-08-08T11:40:08.755Z
+11,Demo Student,student@campusbites.uat,student,active,2026-08-08T11:40:08.788Z
+12,Faith Amadi,faith.amadi@campusbites.uat,student,active,2026-08-08T11:43:04.800Z
+13,Emmanuel Briggs,emmanuel.briggs@campusbites.uat,student,active,2026-08-08T11:43:04.863Z
+14,Blessing Ockiya,blessing.ockiya@campusbites.uat,student,active,2026-08-08T11:43:04.932Z
+15,Daniel Ere,daniel.ere@campusbites.uat,student,active,2026-08-08T11:43:04.998Z
+16,Grace Ibim,grace.ibim@campusbites.uat,student,active,2026-08-08T11:43:05.063Z
+17,Samuel Ogoni,samuel.ogoni@campusbites.uat,student,active,2026-08-08T11:43:05.131Z
+18,Patience Dukumo,patience.dukumo@campusbites.uat,student,active,2026-08-08T11:43:05.211Z
+19,Victor Angaye,victor.angaye@campusbites.uat,student,active,2026-08-08T11:43:05.292Z
+20,Miracle Sotonye,miracle.sotonye@campusbites.uat,student,active,2026-08-08T11:43:05.380Z
+21,Joseph Preye,joseph.preye@campusbites.uat,student,active,2026-08-08T11:43:05.475Z
+22,Tonye Fiberesima,northgategrills@campusbites.uat,vendor,active,2026-08-08T11:43:05.620Z
+23,Ada Perekeme,adasmallchops@campusbites.uat,vendor,rejected,2026-08-08T11:43:05.683Z

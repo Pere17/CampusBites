@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chapter Four — System Implementation, Testing and Results</title>
+<style>
+  @page { size: A4; margin: 25mm 20mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 12pt;
+    line-height: 1.5;
+    color: #111;
+    max-width: 100%;
+  }
+  h1 { font-size: 18pt; text-align: center; margin-top: 0; }
+  h2 { font-size: 15pt; margin-top: 28px; border-bottom: 1.5px solid #333; padding-bottom: 4px; }
+  h3 { font-size: 13pt; margin-top: 20px; }
+  h4 { font-size: 12pt; margin-top: 14px; font-style: italic; }
+  p { text-align: justify; margin: 10px 0; }
+  .cover { text-align: center; margin-bottom: 40px; }
+  .cover .placeholder { color: #a00; font-style: italic; font-size: 10.5pt; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 20px 0; font-size: 9.3pt; }
+  th, td { border: 1px solid #666; padding: 4px 6px; vertical-align: top; text-align: left; }
+  th { background: #e9e9e9; }
+  caption, .tbl-caption { text-align: left; font-weight: bold; font-size: 10.5pt; margin: 18px 0 4px 0; }
+  .pass { color: #0a6b0a; font-weight: bold; }
+  .fail { color: #a00000; font-weight: bold; }
+  .na { color: #666; font-style: italic; }
+  .note { background: #f5f5ee; border-left: 4px solid #999; padding: 8px 12px; margin: 14px 0; font-size: 10.5pt; }
+  .formula { background: #f0f0f0; padding: 8px 12px; margin: 10px 0; font-family: "Courier New", monospace; font-size: 11pt; }
+  code, .mono { font-family: "Courier New", monospace; font-size: 10.5pt; }
+  ul, ol { margin: 8px 0; padding-left: 26px; }
+  .pagebreak { page-break-before: always; }
+  .small { font-size: 9.5pt; color: #444; }
+  .figure-box { border: 1px dashed #999; padding: 14px; margin: 10px 0; font-size: 10pt; color: #555; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <p class="small">CHAPTER FOUR</p>
+  <h1>SYSTEM IMPLEMENTATION, TESTING AND RESULTS</h1>
+  <p><strong>Project:</strong> Online Food Ordering System for the University of Africa, Toru-Orua, Sagbama, Bayelsa State (implemented as "CampusBites")</p>
+  <p class="placeholder">[Insert your name, matriculation number, department and supervisor here per your school's cover-page format — not fabricated by this report.]</p>
+  <p class="small">Test run date: 8 August 2026 · All results in this chapter were captured from a live, running instance of the application (see §4.7 methodology note).</p>
+</div>
+
+<h2>4.1 Introduction</h2>
+<p>This chapter describes how the design presented in Chapter Three was implemented, the tools and environment used to build and run the system, and the testing carried out to verify that the implemented system satisfies the functional and non-functional requirements defined in Chapter Three. Every test result reported in this chapter was obtained by executing an automated test driver (<code>testing/run-tests.js</code>) against the actual running application over HTTP, and by direct inspection of the application source code and its persisted data store. No test result in this chapter has been invented or estimated; where a requirement from Chapter Three could not be exercised because the corresponding feature does not exist in the current implementation, this is stated explicitly rather than assumed or simulated.</p>
+<p>Section 4.2–4.6 describe the implemented system as built. Section 4.7 presents the testing methodology and results (unit, integration, system, negative, performance and security testing, plus a synthetic usability evaluation). Section 4.8 discusses the results, reconciles them with the Chapter Three design, and maps each functional and non-functional requirement to the specific tests that exercised it.</p>
+
+<h2>4.2 Development Environment</h2>
+<table>
+  <tr><th>Component</th><th>Detail</th></tr>
+  <tr><td>Operating system (development/test host)</td><td>Windows 10 Pro</td></tr>
+  <tr><td>Runtime</td><td>Node.js v24.18.0</td></tr>
+  <tr><td>Package manager</td><td>npm 11.16.0</td></tr>
+  <tr><td>Web server (dev)</td><td>Express application served locally at <code>http://localhost:3000</code></td></tr>
+  <tr><td>Version control</td><td>Not initialised as a Git repository at the time of this test run</td></tr>
+  <tr><td>Test execution method</td><td>Node.js script issuing real HTTP requests (<code>fetch</code>) against the running server, with manual session-cookie handling to simulate concurrent student, vendor and admin sessions</td></tr>
+</table>
+
+<h2>4.3 Programming Languages, Frameworks and Tools Used</h2>
+<table>
+  <tr><th>Layer</th><th>Technology actually used in the codebase</th></tr>
+  <tr><td>Server-side language</td><td>JavaScript (Node.js, CommonJS modules)</td></tr>
+  <tr><td>Web framework</td><td>Express.js 4.19</td></tr>
+  <tr><td>Server-rendered templating</td><td>EJS 3.1 (<code>views/*.ejs</code>)</td></tr>
+  <tr><td>Styling</td><td>Tailwind CSS 3.4, compiled at build time (<code>npm run build:css</code> → <code>public/css/app.css</code>) — not loaded from a CDN</td></tr>
+  <tr><td>Client-side interactivity</td><td>Vanilla JavaScript <code>fetch()</code> calls embedded directly in EJS views; no client-side framework (no React/Vue/Angular)</td></tr>
+  <tr><td>Authentication</td><td><code>express-session</code> (cookie-based server sessions) + <code>bcryptjs</code> for password hashing</td></tr>
+  <tr><td>Data persistence</td><td>A custom flat-file JSON store (<code>data/store.js</code>) reading/writing <code>data/db.json</code> — see §4.4 for the important discrepancy this represents against the Chapter Three design</td></tr>
+  <tr><td>Icons</td><td>Lucide icon set, referenced via CDN <code>&lt;script&gt;</code> tag in <code>views/partials/header.ejs</code></td></tr>
+  <tr><td>Dev/test dependency present but unused for this run</td><td><code>playwright-core</code> is listed in <code>devDependencies</code> but no browser binary was installed in this environment, so it was not used for test automation; the HTTP-level driver described in §4.7 was used instead</td></tr>
+</table>
+
+<h2>4.4 Database Implementation</h2>
+<p><strong>Important discrepancy from the Chapter Three design, confirmed by direct source inspection:</strong> Chapter Three specifies SQLite as the database technology, and <code>SPEC.md</code> in the project root also documents "SQLite via <code>better-sqlite3</code>". Neither is actually used. <code>better-sqlite3</code> is not present in <code>package.json</code>, and there is no <code>.sqlite</code>/<code>.db</code> file anywhere in the project. The application instead persists all data in a single JSON file, <code>data/db.json</code>, through a small hand-written module, <code>data/store.js</code>, which exposes <code>load()</code>, <code>save()</code> and a synchronous <code>tx()</code> helper that reads the whole file, mutates it in memory, and writes it back. This is functionally a document-store implementation of the same five-entity relational design from Chapter Three (users, vendors, menu items, orders, order items), not a relational SQL database. This chapter reports this exactly as found; Chapter Three / the project proposal should be corrected to describe the database layer accurately, or the implementation should be migrated to SQLite before final submission if the examiners will check the code against the written design.</p>
+
+<h3>4.4.1 Entities actually implemented (as fields in <code>data/db.json</code>)</h3>
+<table>
+  <tr><th>Chapter 3 entity</th><th>Actual JS object fields (in <code>data/store.js</code> tables)</th><th>Match to Chapter 3 design?</th></tr>
+  <tr><td>Users<br><span class="small">user_id, full_name, email, password_hash, role, date_registered</span></td>
+      <td><code>id, name, email, passwordHash, role, status, createdAt</code></td>
+      <td>Core fields match (renamed to camelCase). An additional <code>status</code> field exists (<code>active</code>/<code>pending</code>/<code>rejected</code>) that Chapter 3's user entity does not list — it is what actually drives vendor approval.</td></tr>
+  <tr><td>Vendors<br><span class="small">vendor_id, user_id, business_name, vendor_type, approval_status</span></td>
+      <td><code>id, userId, businessName, description</code></td>
+      <td><strong>No <code>vendor_type</code> field exists</strong> (no "outlet" vs "student_business" distinction is stored — it can only be inferred informally from the free-text <code>description</code>). <strong>No <code>approval_status</code> field on the vendor record</strong> — approval status actually lives on the linked <em>user's</em> <code>status</code> field, with values <code>active</code> / <code>pending</code> / <code>rejected</code> (not Chapter 3's <code>pending</code>/<code>approved</code>/<code>suspended</code>).</td></tr>
+  <tr><td>Orders<br><span class="small">order_id, student_id, vendor_id, order_date, status, total_amount</span></td>
+      <td><code>id, studentId, vendorId, status, createdAt</code></td>
+      <td><strong>No <code>total_amount</code> is stored on the order.</strong> Total is computed on demand by summing <code>order_items</code> each time it is displayed (<code>routes/student.js</code>). Status values implemented: <code>pending → preparing → ready → completed</code>. <strong>No <code>declined</code> status exists</strong> — there is no order-rejection/cancellation feature (confirmed against <code>SPEC.md</code>: "No order cancellation").</td></tr>
+  <tr><td>Menu Items<br><span class="small">item_id, vendor_id, item_name, price, availability</span></td>
+      <td><code>id, vendorId, name, price</code></td>
+      <td><strong>No <code>availability</code> field exists.</strong> Every seeded menu item is implicitly always orderable; there is no way, in the current implementation, to mark an item unavailable/out of stock, and no <code>category</code> field either.</td></tr>
+</table>
+<div class="note">Because the running application has no <code>vendor_type</code>, <code>approval_status</code> (as named in Ch. 3), <code>total_amount</code>, or <code>availability</code> columns, the test dataset in §4.7 uses Chapter-3-style column headers in its CSV exports for readability (e.g. <code>total_amount</code> is a computed column, not a stored one) but does not claim these are literal database columns. This is documented per-file in <code>testing/test-data/</code>.</div>
+
+<h2>4.5 System Implementation</h2>
+<p>The system follows a three-tier structure consistent with Chapter Three, implemented concretely as:</p>
+<ul>
+  <li><strong>Presentation layer:</strong> EJS templates in <code>views/</code>, rendered server-side per request, styled with compiled Tailwind CSS, with small <code>fetch()</code>-based polling scripts for the two live-updating views (order tracking and vendor dashboard).</li>
+  <li><strong>Application logic layer:</strong> Express route handlers, split by role into <code>routes/auth.js</code> (registration/login/logout, shared), <code>routes/student.js</code> (vendor browsing, cart submission, order tracking), <code>routes/vendor.js</code> (incoming-order dashboard, status advancement), and <code>routes/admin.js</code> (vendor approval/rejection, platform stats). Role-based access is enforced by a single reusable <code>requireRole(...roles)</code> middleware in <code>middleware/auth.js</code>.</li>
+  <li><strong>Data layer:</strong> <code>data/store.js</code>, as described in §4.4.</li>
+</ul>
+<h3>4.5.1 Order status lifecycle as implemented</h3>
+<p>Implemented exactly as a fixed forward-only state machine in <code>routes/vendor.js</code>:</p>
+<div class="formula">pending → preparing → ready → completed</div>
+<p>Each call to <code>POST /vendor/orders/:id/advance</code> moves the order exactly one step along this chain (looked up via a <code>NEXT_STATUS</code> map); there is no way to skip a step, move backwards, or cancel/decline an order once placed.</p>
+<h3>4.5.2 Notification mechanism (FR4)</h3>
+<p>There is no push mechanism (no WebSockets, no email, no SMS) — this matches <code>SPEC.md</code>'s explicit scope cut. "Notification" is implemented as short-interval client-side polling: <code>views/vendor-dashboard.ejs</code> and <code>views/orders.ejs</code> both call their respective JSON endpoint (<code>/api/vendor/orders</code>, <code>/api/orders/mine</code>) immediately on page load and then every 4000ms via <code>setInterval</code>, re-rendering the list from scratch each time.</p>
+<h3>4.5.3 Payment</h3>
+<p>No payment gateway integration exists. The order flow ends at "Pay on pickup" as a business convention only — no payment record, status, or amount-due field is created or tracked anywhere in the code.</p>
+
+<h2>4.6 User Interface Design</h2>
+<p>Nine server-rendered pages/routes were confirmed present, matching the Chapter Three page list:</p>
+<table>
+  <tr><th>Route</th><th>View file</th><th>Purpose</th></tr>
+  <tr><td><code>/</code></td><td>landing.ejs</td><td>Landing page</td></tr>
+  <tr><td><code>/register</code></td><td>register.ejs</td><td>Role-aware registration form, with client-side email-format and password-strength hints (see §4.7.4 for a finding about the server not re-checking these)</td></tr>
+  <tr><td><code>/login</code></td><td>login.ejs</td><td>Login form</td></tr>
+  <tr><td><code>/vendors</code></td><td>vendors.ejs</td><td>Student: card grid of active vendors</td></tr>
+  <tr><td><code>/vendors/:id</code></td><td>vendor-menu.ejs</td><td>Student: single vendor's menu, add to cart</td></tr>
+  <tr><td><code>/orders</code></td><td>orders.ejs</td><td>Student: order history, polling every 4s</td></tr>
+  <tr><td><code>/vendor/dashboard</code></td><td>vendor-dashboard.ejs</td><td>Vendor: incoming orders by status, polling every 4s, one-tap advance</td></tr>
+  <tr><td><code>/admin/dashboard</code></td><td>admin-dashboard.ejs</td><td>Admin: pending approvals, active vendor table, platform counters</td></tr>
+</table>
+<div class="figure-box">Screenshot evidence to capture manually for this section (see §4.8.6 for the full list): landing page, registration form (student and vendor toggle states), vendor grid, a vendor menu page, the cart/order confirmation, the student order-tracking page mid-poll, the vendor dashboard with active orders, and the admin dashboard with a pending approval visible.</div>
+
+<div class="pagebreak"></div>
+<h2>4.7 System Testing</h2>
+<h3>Methodology</h3>
+<p>All tests below were executed by <code>testing/run-tests.js</code>, a Node.js script that issues real HTTP requests against the running server (freshly reset with <code>npm run seed</code> beforehand) and records the actual HTTP status codes, redirect targets, and response bodies returned. Session cookies were captured and replayed per simulated user so that 11 concurrent student sessions, 11 vendor sessions and 1 admin session could be driven independently, exactly as separate browser tabs would behave. A small number of bookkeeping reads of <code>data/db.json</code> were used only to look up internal IDs needed to construct follow-up requests (e.g. which user ID to approve) and to verify persisted state after a request — never to fabricate a result. Full source: <code>testing/run-tests.js</code>. Full raw output: <code>testing/results/*.csv</code>.</p>
+<div class="formula">Pass Rate (%) = (Number of Passed Tests / Total Number of Scored Tests) × 100</div>
+<p>"Scored" excludes tests marked <span class="na">N/A</span>, which are cases where the requirement being probed corresponds to a feature that does not exist in the codebase (see §4.4 and §4.5) and is therefore not executable — these are reported as findings, not silently passed or failed.</p>
+
+<h3>4.7.1 Unit Testing</h3>
+<p class="tbl-caption">Table 4.1 — Unit Testing Results (21 tests; 20 passed, 1 failed, 95.2% pass rate)</p>
+<table>
+<tr><th>ID</th><th>Module/Function</th><th>Test Input</th><th>Expected Result</th><th>Actual Result</th><th>Status</th></tr>
+<tr><td>T001</td><td>Authentication — login()</td><td>Valid admin credentials</td><td>Session created, redirect to /admin/dashboard</td><td>HTTP 200, Admin dashboard rendered</td><td class="pass">PASS</td></tr>
+<tr><td>T002–T011</td><td>Registration — register() [student] ×10</td><td>10 distinct valid student name/email/password combinations</td><td>Account created, auto-logged-in, redirected to /vendors</td><td>All 10: initial 302 → final 200</td><td class="pass">PASS (10/10)</td></tr>
+<tr><td>T016</td><td>Registration — register() [vendor]</td><td>businessName="Northgate Grills", role=vendor</td><td>Account created with status=pending, not auto-logged-in, approval notice shown</td><td>Created, status=pending, notice shown</td><td class="pass">PASS</td></tr>
+<tr><td>T017</td><td>Registration — register() [vendor]</td><td>businessName="Ada's Small Chops", role=vendor</td><td>Same as above</td><td>Created, status=pending, notice shown</td><td class="pass">PASS</td></tr>
+<tr><td>T025</td><td>Menu Browsing — GET /vendors</td><td>Authenticated student request</td><td>Only active vendors listed</td><td>10 active vendors listed; rejected vendor correctly absent; approved vendor correctly present (rendered with HTML-entity-escaped apostrophe by EJS)</td><td class="pass">PASS</td></tr>
+<tr><td>T026</td><td>Menu Browsing — GET /vendors/:id</td><td>Valid vendor ID</td><td>Menu items with names/prices rendered</td><td>HTTP 200, business name present in page</td><td class="pass">PASS</td></tr>
+<tr><td>T028</td><td>Order Placement — POST /orders (bulk)</td><td>40 realistic multi-item carts across 10 vendors / 11 students</td><td>Each order + its order_items persisted, status=pending on creation</td><td>40/40 created successfully</td><td class="pass">PASS</td></tr>
+<tr><td>T029</td><td>Order total calculation</td><td>Spot-check of 5 placed orders</td><td>sum(price_at_order × quantity) matches snapshot price</td><td>Recomputation from stored order_items consistent for all checked orders</td><td class="pass">PASS</td></tr>
+<tr><td>T034</td><td>Order Tracking — GET /api/orders/mine</td><td>Authenticated student request</td><td>JSON list of only that student's own orders</td><td>HTTP 200, correct order set returned</td><td class="pass">PASS</td></tr>
+<tr><td>T037</td><td>Order Status Update — POST /vendor/orders/:id/advance</td><td>40 orders advanced 0–3 steps each</td><td>Status advances exactly one step per call; final distribution spans all 4 statuses</td><td>Final distribution: 10 pending / 10 preparing / 10 ready / 10 completed</td><td class="pass">PASS</td></tr>
+<tr><td>T041</td><td>Admin reporting — stats on GET /admin/dashboard</td><td>Admin loads dashboard after test data generated</td><td>Counters reflect live db.json state</td><td>40 total orders, 11 students — dashboard numerically consistent</td><td class="pass">PASS</td></tr>
+<tr><td>T042</td><td>Vendor Menu Management (FR7)</td><td>Search of routes/vendor.js + vendor-dashboard.ejs for CRUD routes</td><td>Chapter 3 FR7 expects add/edit/remove menu items</td><td><strong>NOT IMPLEMENTED</strong> — no route or UI exists to create, edit or delete a menu item; menus are fixed at seed time only</td><td class="fail">FAIL</td></tr>
+</table>
+<p class="small">Full 21-row table with every individual student registration row: <code>testing/results/unit_test_results.csv</code>.</p>
+
+<h3>4.7.2 Integration Testing</h3>
+<p class="tbl-caption">Table 4.2 — Integration Testing Results (3 tests; 3 passed, 100%)</p>
+<table>
+<tr><th>ID</th><th>Flow</th><th>Input</th><th>Expected Result</th><th>Actual Result</th><th>Status</th></tr>
+<tr><td>T021</td><td>Admin → Vendor Approval → Vendor Access</td><td>Admin approves pre-seeded pending vendor "Bola's Snack Corner"</td><td>user.status: pending → active</td><td>status now "active"</td><td class="pass">PASS</td></tr>
+<tr><td>T023</td><td>Admin → Vendor Rejection → Access Revoked</td><td>Admin rejects "Ada's Small Chops"</td><td>user.status → rejected; vendor row + menu items deleted</td><td>status="rejected"; vendor row removed</td><td class="pass">PASS</td></tr>
+<tr><td>T036</td><td>Student → Order → Vendor (poll-based notification)</td><td>Order placed by a student for a specific vendor</td><td>Order appears in that vendor's GET /api/vendor/orders feed without manual refresh</td><td>Order present in vendor feed</td><td class="pass">PASS</td></tr>
+</table>
+
+<h3>4.7.3 System Testing</h3>
+<p class="tbl-caption">Table 4.3 — End-to-End System Testing Results (5 scenarios; 2 passed, 1 failed, 2 not testable)</p>
+<table>
+<tr><th>ID</th><th>Scenario</th><th>Steps</th><th>Expected</th><th>Actual</th><th>Status</th></tr>
+<tr><td>T022</td><td>TEST 6: Admin approves vendor → vendor gains access</td><td>Register vendor → admin approves → vendor logs in → dashboard loads</td><td>Login succeeds post-approval, dashboard renders</td><td>Confirmed — vendor dashboard rendered with correct business name</td><td class="pass">PASS</td></tr>
+<tr><td>T038</td><td>TEST 2: Vendor updates status → student sees it</td><td>Order placed → vendor advances it → student re-polls /api/orders/mine</td><td>Student-facing status reflects vendor's update</td><td>Student saw status="preparing" after vendor action, no manual student action needed</td><td class="pass">PASS</td></tr>
+<tr><td>T052</td><td>TEST 3/4/5: Vendor adds/edits/removes a menu item</td><td>Searched for a menu-management route/form</td><td>N/A per Ch.3 FR7</td><td><strong>NOT TESTABLE</strong> — feature does not exist (see T042)</td><td class="na">N/A</td></tr>
+<tr><td>T053</td><td>TEST 7: Admin generates a sales report</td><td>Loaded /admin/dashboard as admin</td><td>Ch.3 FR8 mentions "generate basic sales reports"</td><td>Dashboard shows live counters + a per-vendor order-count column only; no revenue total, no date filter, no exportable report artifact</td><td class="na">N/A / PARTIAL</td></tr>
+<tr><td>T054</td><td>TEST 8: Invalid registration data submitted</td><td>POST /register with email="not-an-email"</td><td>Server-side rejection expected</td><td><strong>Account was created</strong> — email format is validated only in client-side JS (register.ejs), not re-checked server-side (routes/auth.js)</td><td class="fail">FAIL</td></tr>
+</table>
+
+<h3>4.7.4 Negative / Error Testing</h3>
+<p class="tbl-caption">Table 4.4 — Negative/Error Testing Results (12 tests; 12 passed, 100%)</p>
+<table>
+<tr><th>ID</th><th>Scenario</th><th>Input</th><th>Expected</th><th>Actual</th><th>Status</th></tr>
+<tr><td>T012</td><td>Duplicate email registration</td><td>Re-register an already-used email</td><td>Rejected: "account already exists"</td><td>Rejected as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T013</td><td>Missing required fields</td><td>name/email/password all blank</td><td>Rejected: "All fields are required."</td><td>Rejected as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T014</td><td>Invalid role value</td><td>role="superadmin"</td><td>Rejected: "Invalid role."</td><td>Rejected as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T015</td><td>Vendor registration, no business name</td><td>role=vendor, businessName missing</td><td>Rejected: "Business name is required for vendors."</td><td>Rejected as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T018</td><td>Login while vendor account still pending</td><td>Valid creds, status=pending</td><td>Rejected: "still pending admin approval"</td><td>Rejected as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T019</td><td>Login with wrong password</td><td>Correct email, wrong password</td><td>Rejected: "Invalid email or password."</td><td>Rejected as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T020</td><td>Login with non-existent email</td><td>Unregistered email</td><td>Rejected: "Invalid email or password."</td><td>Rejected as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T027</td><td>Menu for non-existent vendor ID</td><td>GET /vendors/999999</td><td>404 "Vendor not found"</td><td>404 as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T030</td><td>Order with empty cart</td><td>items=[]</td><td>400 "Cart is empty"</td><td>400 as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T031</td><td>Order with malformed cart JSON</td><td>items="not-json"</td><td>400 "Invalid cart data"</td><td>400 as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T032</td><td>Order for non-existent vendor</td><td>vendorId=999999</td><td>400 "Vendor not found"</td><td>400 as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T040</td><td>Advance a non-existent order ID</td><td>POST /vendor/orders/999999/advance</td><td>No crash; silent no-op</td><td>HTTP 200 after redirect, no crash, no explicit 404 handling</td><td class="pass">PASS</td></tr>
+</table>
+
+<div class="pagebreak"></div>
+<h3>4.7.5 Performance Testing</h3>
+<p>Each operation below was invoked repeatedly against the live local server and timed client-side with <code>performance.now()</code>, wall-clock, including full request/response round-trip. These are localhost, single-machine, unloaded timings — they characterise application-layer overhead, not production network latency or behaviour under concurrent load.</p>
+<div class="formula">Average Response Time = ( Σ Tᵢ ) / n ,  for i = 1 … n runs</div>
+<p class="tbl-caption">Table 4.5 — Performance Testing Results</p>
+<table>
+<tr><th>ID</th><th>Operation</th><th>Runs</th><th>Average (ms)</th><th>Minimum (ms)</th><th>Maximum (ms)</th><th>Result</th></tr>
+<tr><td>T055</td><td>POST /login (valid admin credentials)</td><td>20</td><td>57.04</td><td>35.14</td><td>117.43</td><td class="pass">PASS (&lt;1s)</td></tr>
+<tr><td>T056</td><td>GET /vendors (vendor list load)</td><td>20</td><td>29.06</td><td>17.04</td><td>38.54</td><td class="pass">PASS (&lt;1s)</td></tr>
+<tr><td>T057</td><td>GET /vendors/:id (single menu load)</td><td>20</td><td>31.26</td><td>23.09</td><td>41.10</td><td class="pass">PASS (&lt;1s)</td></tr>
+<tr><td>T058</td><td>GET /api/orders/mine (order-tracking poll)</td><td>20</td><td>13.67</td><td>8.72</td><td>19.01</td><td class="pass">PASS (&lt;1s)</td></tr>
+<tr><td>T059</td><td>GET /api/vendor/orders (vendor-dashboard poll)</td><td>20</td><td>16.04</td><td>9.17</td><td>24.99</td><td class="pass">PASS (&lt;1s)</td></tr>
+<tr><td>T060</td><td>GET /admin/dashboard (admin stats load)</td><td>20</td><td>26.08</td><td>19.48</td><td>33.95</td><td class="pass">PASS (&lt;1s)</td></tr>
+<tr><td>T061</td><td>POST /orders (order submission)</td><td>40</td><td>37.13</td><td>21.74</td><td>50.11</td><td class="pass">PASS (&lt;1s)</td></tr>
+<tr><td>T062</td><td>POST /vendor/orders/:id/advance (status update)</td><td>60</td><td>39.81</td><td>17.69</td><td>82.40</td><td class="pass">PASS (&lt;1s)</td></tr>
+</table>
+<div class="note"><strong>What could not be reliably measured here:</strong> concurrent/load performance (e.g. 50 simultaneous students ordering at once) was not tested — the JSON-file store's <code>tx()</code> function performs a synchronous whole-file read-modify-write with no locking, so behaviour under concurrent write load is a real architectural question this test run does not answer. If a load test is required for the thesis, it should be run separately with a tool such as <code>autocannon</code> or <code>k6</code> and reported honestly rather than estimated.</div>
+
+<h3>4.7.6 Security Testing</h3>
+<p class="tbl-caption">Table 4.6 — Security Testing Results (13 checks; 12 passed, 1 informational finding)</p>
+<table>
+<tr><th>ID</th><th>Check</th><th>Input</th><th>Expected</th><th>Actual</th><th>Status</th></tr>
+<tr><td>T024</td><td>Rejected-vendor account access</td><td>Login after admin rejection</td><td>Ideally blocked</td><td><strong>Finding:</strong> app only special-cases status="pending" at login, not "rejected" — a rejected vendor's session is still created, though their vendor profile row is gone so /vendor/dashboard then 404s</td><td class="na">FINDING</td></tr>
+<tr><td>T033</td><td>Unauthenticated order submission</td><td>POST /orders, no session cookie</td><td>Redirect to /login</td><td>302 → /login, no order created</td><td class="pass">PASS</td></tr>
+<tr><td>T035</td><td>Order-list isolation between students</td><td>Student fetches /api/orders/mine</td><td>Only own orders returned</td><td>Confirmed — all returned orders belonged to the requesting student</td><td class="pass">PASS</td></tr>
+<tr><td>T039</td><td>Cross-vendor order tampering</td><td>Vendor A attempts to advance Vendor B's order</td><td>No-op (vendorId ownership guard)</td><td>Status unchanged before/after — blocked as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T043</td><td>Student accesses vendor dashboard</td><td>GET /vendor/dashboard as student</td><td>403 Forbidden</td><td>403 as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T044</td><td>Student accesses admin dashboard</td><td>GET /admin/dashboard as student</td><td>403 Forbidden</td><td>403 as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T045</td><td>Vendor accesses admin dashboard</td><td>GET /admin/dashboard as vendor</td><td>403 Forbidden</td><td>403 as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T046</td><td>Unauthenticated access to student route</td><td>GET /vendors, no cookie</td><td>Redirect to /login</td><td>302 → /login</td><td class="pass">PASS</td></tr>
+<tr><td>T047</td><td>Unauthenticated access to vendor API</td><td>GET /api/vendor/orders, no cookie</td><td>Redirect to /login</td><td>302 → /login</td><td class="pass">PASS</td></tr>
+<tr><td>T048</td><td>Non-admin attempts vendor approval</td><td>Student POSTs /admin/vendors/:id/approve</td><td>403 Forbidden</td><td>403 as expected</td><td class="pass">PASS</td></tr>
+<tr><td>T049</td><td>Password storage format</td><td>Inspect stored passwordHash</td><td>bcrypt hash, never plaintext</td><td>Confirmed bcrypt-format (<code>$2a$08$...</code>), not equal to plaintext</td><td class="pass">PASS</td></tr>
+<tr><td>T050</td><td>Stored XSS via vendor business name</td><td>businessName=&lt;script&gt;alert('xss')&lt;/script&gt;</td><td>EJS auto-escapes output</td><td>Raw payload absent from rendered HTML; escaped entity form present</td><td class="pass">PASS</td></tr>
+<tr><td>T051</td><td>Direct access to database file</td><td>GET /db.json and /data/db.json</td><td>404 — not web-accessible</td><td>Both 404 as expected</td><td class="pass">PASS</td></tr>
+</table>
+<div class="note"><strong>Additional source-level security observations</strong> (found by code inspection, not HTTP testing, and reported here rather than omitted): (1) <code>server.js</code> hardcodes the session secret as the literal string <code>"campusbites-demo-secret"</code> — acceptable for a demo, but must be replaced with a secret loaded from an environment variable before any real deployment. (2) The session cookie is not marked <code>secure</code> (reasonable in this HTTP-only local dev setup, but must be enabled once the app is served over HTTPS). (3) There is no rate-limiting on <code>/login</code> or <code>/register</code>, so brute-force / credential-stuffing attempts are not throttled. (4) SQL injection is not applicable — the data layer is a JSON file, not a SQL database — but the equivalent risk class (unsanitised user input reaching the persistence layer) was checked via the XSS test above and via manual review of <code>data/store.js</code>, which does simple property assignment with no query construction of any kind.</div>
+
+<h3>4.7.7 Usability / User Acceptance Test Data</h3>
+<div class="note"><strong>This entire subsection is SYNTHETIC TEST DATA</strong>, clearly labelled as such in <code>testing/test-data/usability_test_data.csv</code> (column <code>data_label = SYNTHETIC_TEST_DATA</code> on every row). It was generated to demonstrate the analysis method and table structure Chapter 4 needs — it is <strong>not</strong> real participant feedback and must not be presented as such in your final submission. See §4.8.5 for exactly what real data you need to collect instead.</div>
+<p class="tbl-caption">Table 4.7 — Usability Evaluation (synthetic demonstration data, 5-point Likert scale, 10 student + 4 vendor synthetic respondents)</p>
+<table>
+<tr><th>Item</th><th>Respondents (n)</th><th>Average score / 5</th></tr>
+<tr><td>Ease of registration/login</td><td>14</td><td>4.29</td></tr>
+<tr><td>Ease of browsing menus (students only)</td><td>10</td><td>4.40</td></tr>
+<tr><td>Ease of placing orders (students only)</td><td>10</td><td>4.30</td></tr>
+<tr><td>Clarity of order status (students only)</td><td>10</td><td>4.30</td></tr>
+<tr><td>Ease of vendor order management (vendors only)</td><td>4</td><td>4.50</td></tr>
+<tr><td>Overall usefulness</td><td>14</td><td>4.21</td></tr>
+<tr><td>Overall satisfaction</td><td>14</td><td>4.14</td></tr>
+</table>
+<div class="formula">Item Average = ( Σ Likert scores for item ) / ( number of respondents who answered that item )</div>
+
+<div class="pagebreak"></div>
+<h2>4.8 Results and Discussion</h2>
+
+<h3>4.8.1 Overall test statistics</h3>
+<p class="tbl-caption">Table 4.8 — Overall Testing Summary</p>
+<table>
+<tr><th>Category</th><th>Total</th><th>Scored</th><th>Passed</th><th>Failed</th><th>Not applicable</th><th>Pass rate</th></tr>
+<tr><td>Unit</td><td>21</td><td>21</td><td>20</td><td>1</td><td>0</td><td>95.2%</td></tr>
+<tr><td>Integration</td><td>3</td><td>3</td><td>3</td><td>0</td><td>0</td><td>100.0%</td></tr>
+<tr><td>System</td><td>5</td><td>3</td><td>2</td><td>1</td><td>2</td><td>66.7%</td></tr>
+<tr><td>Negative/Error</td><td>12</td><td>12</td><td>12</td><td>0</td><td>0</td><td>100.0%</td></tr>
+<tr><td>Security</td><td>13</td><td>12</td><td>12</td><td>0</td><td>1</td><td>100.0%</td></tr>
+<tr><th>Overall</th><th>54</th><th>51</th><th>49</th><th>2</th><th>3</th><th>96.1%</th></tr>
+</table>
+<div class="formula">Overall Pass Rate (%) = (49 / 51) × 100 = 96.1%</div>
+<p>This figure should be read carefully in a viva: it counts only scored (pass/fail-capable) tests. The 3 "not applicable" items and the 2 genuine failures both point at the same two root causes — email format is not validated server-side, and vendor menu management (FR7) is not implemented — and are discussed below rather than folded silently into the headline number.</p>
+
+<h3>4.8.2 Discussion of findings</h3>
+<ol>
+  <li><strong>Core order flow is solid.</strong> Registration, login, role-based access control, vendor approval/rejection, menu browsing, order placement, order-total calculation, poll-based notification, and the full status lifecycle all behaved exactly as specified and were exercised with real, varied data (11 students, 10 active vendor businesses, 40 orders spanning all four statuses).</li>
+  <li><strong>Two real gaps exist between the Chapter Three design and the delivered system:</strong> (a) server-side email format validation is missing (client-side only), and (b) FR7 (vendor menu management) was never built — this was a scope cut visible in <code>SPEC.md</code>'s own text ("Vendor menus are seeded from real data (not editable via UI in this build)"), so it is a known, documented limitation of the 5-hour demo build rather than a hidden defect.</li>
+  <li><strong>Database technology does not match Chapter Three.</strong> The design specifies SQLite; the implementation uses a flat JSON file. This should be corrected in the write-up, or the implementation should be migrated, before final submission — examiners are likely to check this directly.</li>
+  <li><strong>Security fundamentals are in place</strong> for a system of this scope: bcrypt password hashing, session-based auth, consistent role-based route guarding, output-encoding that defeats a basic stored-XSS probe, and correct ownership checks preventing students/vendors from reading or mutating each other's data. The one behavioural gap found (rejected vendors are not explicitly blocked from logging in, only pending ones) is a minor, fixable finding, not an exploitable data-access flaw, since the vendor's profile is deleted on rejection.</li>
+  <li><strong>Performance is not a concern at this scale.</strong> All measured operations completed in well under 1 second on a single unloaded local instance (max observed: 117ms for a login round-trip). This says nothing about behaviour under concurrent load, which was explicitly not tested — see the note in §4.7.5.</li>
+</ol>
+
+<h3>4.8.3 Functional Requirement → Test Evidence Mapping</h3>
+<p class="tbl-caption">Table 4.9 — FR-to-Test Mapping</p>
+<table>
+<tr><th>Requirement</th><th>Test IDs</th><th>Verdict</th></tr>
+<tr><td>FR1 — User Registration &amp; Login</td><td>T001–T020, T024</td><td>Implemented and verified for all three roles, including the vendor pending-approval gate. One informational gap: rejected (not pending) vendors are not explicitly blocked from logging in (T024).</td></tr>
+<tr><td>FR2 — Menu Browsing</td><td>T025, T026, T027</td><td>Implemented and verified — active-vendor filtering and 404 handling both correct.</td></tr>
+<tr><td>FR3 — Order Placement</td><td>T028–T033</td><td>Implemented and verified, including quantity handling, multi-item carts, and all tested negative paths.</td></tr>
+<tr><td>FR4 — Order Notification</td><td>T036</td><td>Implemented as 4-second client-side polling, not a push notification. Verified an order becomes visible to the correct vendor without vendor-initiated refresh.</td></tr>
+<tr><td>FR5 — Order Status Update</td><td>T037, T038, T039, T040</td><td>Implemented and verified, including a strict forward-only lifecycle and a cross-vendor tampering guard.</td></tr>
+<tr><td>FR6 — Order Tracking</td><td>T034, T035</td><td>Implemented and verified, including per-student data isolation.</td></tr>
+<tr><td>FR7 — Vendor Menu Management</td><td>T042, T052</td><td><strong>Not implemented.</strong> No route or UI exists for a vendor to add, edit, or remove a menu item.</td></tr>
+<tr><td>FR8 — Administrative Oversight</td><td>T021, T022, T023, T024, T041, T048, T053</td><td>Vendor approval/rejection and platform counters are implemented and verified. "Generate basic sales reports" is only partially met — the dashboard shows live counters and per-vendor order counts, with no revenue figures, date filtering, or exportable report.</td></tr>
+</table>
+
+<h3>4.8.4 Non-Functional Requirement → Test Evidence Mapping</h3>
+<p class="tbl-caption">Table 4.10 — NFR-to-Test Mapping</p>
+<table>
+<tr><th>Requirement</th><th>Evidence</th><th>Verdict</th></tr>
+<tr><td>NFR1 — Usability</td><td>§4.7.7 (synthetic questionnaire); client-side UX affordances observed in register.ejs (password-strength meter, inline email check)</td><td>Automated tests cannot measure real usability. Synthetic data only demonstrates the method — real data collection required (§4.8.5).</td></tr>
+<tr><td>NFR2 — Performance</td><td>T055–T062</td><td>Met for single-user, unloaded, localhost conditions (all &lt;120ms). Concurrent-load behaviour not tested — flagged as a risk given the non-atomic file store (§4.7.5).</td></tr>
+<tr><td>NFR3 — Reliability</td><td>T040 (invalid order ID does not crash the server); general absence of unhandled exceptions across 150+ requests issued during this run</td><td>Basic reliability demonstrated for the paths tested. The file-based store's lack of locking under concurrent writes is an unverified architectural risk, not a confirmed defect.</td></tr>
+<tr><td>NFR4 — Security</td><td>T024, T033, T035, T039, T043–T051; source-level observations on session secret and rate limiting (§4.7.6 note)</td><td>Strong on access control and output encoding. Two concrete improvements identified: server-side email validation, and moving the session secret out of source code.</td></tr>
+<tr><td>NFR5 — Availability</td><td>None collected</td><td><strong>Not testable</strong> from a local single-instance demo run. Availability/uptime requires a deployed environment with monitoring over time — see §4.8.6.</td></tr>
+</table>
+
+<h3>4.8.5 What you still need to collect manually</h3>
+<ul>
+  <li><strong>Real usability/UAT data:</strong> Have at least 8–10 real students and 3–4 real vendor users actually use the running app (register, browse, order / manage orders) and fill in a Likert questionnaire using the same items as Table 4.7. Record their responses as <code>real_usability_data.csv</code> alongside (not overwriting) the synthetic file, and clearly mark it as real participant data with consent noted.</li>
+  <li><strong>Screenshots for Chapter 4 / Appendix</strong> (all easy to capture from your own browser against the already-running app): landing page; registration form for both roles; the "pending approval" login message for an unapproved vendor; the admin dashboard showing a pending approval and the approve/reject buttons; the vendor grid and a vendor's menu page; the cart/order submission; the student order-tracking page showing an order mid-status with the auto-refreshing badge; the vendor dashboard showing an incoming order and the "Accept/Mark ready/Mark picked up" buttons in sequence; and one browser dev-tools Network-tab screenshot showing a 4-second polling interval on <code>/api/orders/mine</code> or <code>/api/vendor/orders</code> as direct visual evidence for FR4.</li>
+  <li><strong>Availability data (NFR5):</strong> if your department expects an uptime figure, this requires deploying the app somewhere persistent (even a free-tier host) and monitoring it over days/weeks — it cannot be produced from a local test run.</li>
+  <li><strong>A supervisor/committee decision on the two design mismatches</strong> flagged in §4.4 and the FR7 gap in §4.8.2 — either correct the Chapter Three narrative to match what was actually built, or extend the implementation (SQLite migration, vendor menu CRUD) before defence, depending on how much time remains.</li>
+</ul>
+
+<h3>4.8.6 Recommended Chapter 4 table numbering (as used above)</h3>
+<table>
+<tr><th>Table</th><th>Content</th></tr>
+<tr><td>Table 4.1</td><td>Development environment</td></tr>
+<tr><td>Table 4.2</td><td>Languages/frameworks/tools</td></tr>
+<tr><td>Table 4.3</td><td>Chapter 3 vs implemented database entity comparison</td></tr>
+<tr><td>Table 4.4</td><td>Pages/routes and their views</td></tr>
+<tr><td>Table 4.5</td><td>Unit testing results</td></tr>
+<tr><td>Table 4.6</td><td>Integration testing results</td></tr>
+<tr><td>Table 4.7</td><td>System testing results</td></tr>
+<tr><td>Table 4.8</td><td>Negative/error testing results</td></tr>
+<tr><td>Table 4.9</td><td>Performance testing results</td></tr>
+<tr><td>Table 4.10</td><td>Security testing results</td></tr>
+<tr><td>Table 4.11</td><td>Usability evaluation (synthetic, clearly marked)</td></tr>
+<tr><td>Table 4.12</td><td>Overall testing summary</td></tr>
+<tr><td>Table 4.13</td><td>FR-to-test mapping</td></tr>
+<tr><td>Table 4.14</td><td>NFR-to-test mapping</td></tr>
+</table>
+<p class="small">Note: the running numbering used inline above (4.1–4.10) groups a few of these together for readability; renumber to 4.1–4.14 if your department wants one table per numbered reference — the content above already maps 1:1 onto this list.</p>
+
+<p class="small" style="margin-top:30px; border-top:1px solid #999; padding-top:8px;">
+Generated from live test execution against CampusBites on 8 August 2026. Source data and reproduction steps: <code>testing/run-tests.js</code>, <code>testing/results/*.csv</code>, <code>testing/test-data/*.csv</code>, <code>testing/test_summary.md</code>.
+</p>
+
+</body>
+</html>

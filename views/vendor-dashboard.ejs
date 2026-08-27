@@ -1,0 +1,107 @@
+<%- include('partials/header') %>
+
+<div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
+  <div>
+    <h1 class="font-display text-2xl font-bold text-ink"><%= vendor.businessName %></h1>
+    <p class="text-sm text-ink3 mt-1 flex items-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-success animate-pulse"></span>
+      Incoming orders update automatically
+    </p>
+  </div>
+</div>
+
+<div id="ordersList" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <% for (let i=0;i<3;i++) { %>
+    <div class="card p-4">
+      <div class="flex justify-between mb-3">
+        <div class="space-y-2">
+          <div class="skeleton h-4 w-24 rounded"></div>
+          <div class="skeleton h-3 w-32 rounded"></div>
+        </div>
+        <div class="skeleton h-6 w-20 rounded-full"></div>
+      </div>
+      <div class="skeleton h-3 w-full rounded mb-2"></div>
+      <div class="skeleton h-8 w-full rounded-xl mt-3"></div>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  const STATUS_LABEL = {
+    pending: 'New order',
+    preparing: 'Preparing',
+    ready: 'Ready for pickup'
+  };
+  const STATUS_ICON = {
+    pending: 'bell',
+    preparing: 'flame',
+    ready: 'check-circle-2'
+  };
+  const STATUS_STYLE = {
+    pending: 'bg-accent/15 text-accent',
+    preparing: 'bg-primary/15 text-primary',
+    ready: 'bg-success/15 text-success'
+  };
+  const ACTION_LABEL = {
+    preparing: 'Accept order',
+    ready: 'Mark ready',
+    completed: 'Mark picked up'
+  };
+  const ACTION_ICON = {
+    preparing: 'check',
+    ready: 'bell-ring',
+    completed: 'package-check'
+  };
+
+  async function loadOrders() {
+    const res = await fetch('/api/vendor/orders');
+    const data = await res.json();
+    render(data.orders);
+  }
+
+  function render(orders) {
+    const container = document.getElementById('ordersList');
+    if (orders.length === 0) {
+      container.innerHTML = `
+        <div class="card p-12 text-center sm:col-span-2 lg:col-span-3">
+          <div class="w-14 h-14 rounded-full bg-surface flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="inbox" class="text-ink3" style="width:24px;height:24px"></i>
+          </div>
+          <p class="text-ink2 font-medium mb-1">No active orders right now</p>
+          <p class="text-sm text-ink3">New orders will appear here automatically.</p>
+        </div>`;
+      if (window.lucide) lucide.createIcons();
+      return;
+    }
+    container.innerHTML = orders.map(o => `
+      <div class="card p-4 hover:border-primary/30 transition-colors duration-200 animate-fade-up">
+        <div class="flex justify-between items-start mb-3 gap-2">
+          <div>
+            <h3 class="font-semibold text-ink">Order #${o.id}</h3>
+            <p class="text-xs text-ink3 mt-0.5">${o.studentName} — ${new Date(o.createdAt).toLocaleTimeString()}</p>
+          </div>
+          <span class="badge ${STATUS_STYLE[o.status]} shrink-0">
+            <i data-lucide="${STATUS_ICON[o.status]}" style="width:12px;height:12px"></i>
+            ${STATUS_LABEL[o.status]}
+          </span>
+        </div>
+        <ul class="text-sm text-ink2 mb-4 space-y-0.5">
+          ${o.items.map(it => `<li>${it.name} <span class="text-ink3">x${it.quantity}</span></li>`).join('')}
+        </ul>
+        ${o.nextStatus ? `
+          <form method="POST" action="/vendor/orders/${o.id}/advance">
+            <button class="btn-primary w-full !py-2 text-sm">
+              <i data-lucide="${ACTION_ICON[o.nextStatus]}" style="width:15px;height:15px"></i>
+              ${ACTION_LABEL[o.nextStatus]}
+            </button>
+          </form>` : ''}
+      </div>
+    `).join('');
+    if (window.lucide) lucide.createIcons();
+  }
+
+  loadOrders();
+  setInterval(loadOrders, 4000);
+</script>
+
+<%- include('partials/footer') %>

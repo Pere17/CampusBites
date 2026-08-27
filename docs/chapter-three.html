@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Chapter Three</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="report.css" />
+</head>
+<body>
+<h1 id="chapter-three-system-analysis-and-design-methodology">CHAPTER
+THREE: SYSTEM ANALYSIS AND DESIGN METHODOLOGY</h1>
+<h2 id="introduction">3.1 Introduction</h2>
+<p>This chapter presents the analysis and design work that produced
+CampusBites, the online food ordering system built for this project.
+CampusBites is a role-based web application that allows students at
+University of Africa, Toru-Orua (UAT) to order food from campus vendors
+without having to queue physically at an eatery, allows vendors to
+receive and manage those orders from a dashboard, and allows an
+administrator to control which vendors are allowed to trade on the
+platform. The chapter covers how the existing (manual) way of getting
+food on campus was analysed, the problems that analysis surfaced, the
+methodology adopted to build a replacement, the functional and
+non-functional requirements derived from that analysis, and the design
+artefacts — architecture, database design and UML diagrams — that guided
+the implementation described in Chapter Four.</p>
+<p>Everything described in this chapter reflects the system as it was
+actually built. Where the implementation departs from what might be
+expected of a typical academic food-ordering system — for instance, the
+choice of a JSON document store instead of a relational database, or the
+decision to poll for order updates instead of using WebSockets — the
+reasoning behind that decision is stated explicitly rather than glossed
+over.</p>
+<h2 id="analysis-of-existing-system">3.2 Analysis of Existing
+System</h2>
+<p>Before CampusBites, food ordering at UAT’s campus eateries followed
+the pattern common to most Nigerian tertiary institutions: a student
+walks to a vendor’s stall or shop, joins whatever queue is there, states
+their order verbally, waits while it is prepared (or while orders ahead
+of theirs are prepared), and pays on collection. Some vendors keep a
+rough mental or paper record of pending orders during busy periods; none
+of the vendors observed during this project used any digital system to
+record, sequence, or track orders.</p>
+<p>This arrangement works, in the sense that food gets served, but it
+has no mechanism for a student to know how long a wait will be, no way
+for a vendor to smooth out a rush of simultaneous orders, and no
+institutional oversight of who is operating as a food vendor on campus.
+Vendors range from established eateries to informal student-run “food
+hustles” operating out of a room or a table, and there is no shared,
+campus-wide way for a new vendor to be discovered by students or for the
+school to keep a record of who is currently trading.</p>
+<h2 id="problems-identified-in-the-existing-system">3.3 Problems
+Identified in the Existing System</h2>
+<p>Analysis of the existing (manual) process identified the following
+recurring problems:</p>
+<ol type="1">
+<li><strong>Physical queueing.</strong> Students must be physically
+present at a vendor to place and wait for an order, which is wasteful of
+time between lectures.</li>
+<li><strong>No order status visibility.</strong> Once an order is placed
+verbally, the student has no way of checking its progress except by
+waiting at the counter or asking again.</li>
+<li><strong>Order mix-ups during rush periods.</strong> Verbal ordering
+with no written or digital record makes it easy for a vendor serving
+several customers at once to lose track of who ordered what.</li>
+<li><strong>No discovery mechanism for smaller vendors.</strong>
+Student-run food hustles rely entirely on word of mouth; there is no
+shared listing a new student can browse to see what is available on
+campus.</li>
+<li><strong>No vetting of who can sell food on campus.</strong> Anyone
+can claim to be selling food with no institutional record of active,
+approved vendors.</li>
+<li><strong>No historical record for the student.</strong> There is no
+order history a student can refer back to — for a repeat order, a
+receipt, or a record of what was actually paid for a given item on a
+given day.</li>
+</ol>
+<h2 id="justification-for-the-new-system">3.4 Justification for the New
+System</h2>
+<p>CampusBites was built specifically to address the problems listed in
+Section 3.3, rather than to replicate the feature set of a
+general-purpose commercial food delivery app. Because the existing
+process is pickup-based rather than delivery-based, the system was
+scoped around <strong>ordering ahead and tracking status</strong>, not
+around delivery logistics, live rider tracking, or payment processing —
+none of which the existing campus process has or needs at this
+stage.</p>
+<p>Concretely, the new system addresses each problem as follows:
+students can browse a vendor’s menu and place an order from anywhere
+with a browser, removing the need to queue before ordering (Problem 1);
+the order-tracking page polls the server every four seconds so a student
+can see their order move from “received” to “preparing” to “ready”
+without needing to ask anyone (Problem 2); every order is recorded as a
+structured record with itemised quantities and a price snapshot at the
+time of ordering, removing the ambiguity of a verbal order (Problem 3);
+every vendor, from an established eatery to a one-person snack hustle,
+gets the same listing page a student can browse (Problem 4); a vendor
+account is not usable until an administrator has approved it, giving the
+school a single point of control over who can trade (Problem 5); and a
+student’s past orders remain visible on an order history page (Problem
+6).</p>
+<h2 id="methodology-adopted">3.5 Methodology Adopted</h2>
+<p>The system was built iteratively rather than to a single upfront
+design. Development began by deliberately narrowing scope to the core
+order flow — registration, login, browsing, ordering, and status
+tracking — before any visual design work was attempted, so that a
+working, clickable system existed early. Later iterations layered
+additional work on top of that working core: a full visual redesign of
+every page around a single dark colour theme and a consistent component
+system, followed by the addition of real vendor and menu photography,
+and the addition of five further vendors to the seed data. Each
+iteration was tested against the running application before the next one
+began, rather than all requirements being designed in full up front and
+implemented in one pass.</p>
+<p>This incremental approach was chosen over a strict Waterfall model
+because the requirements for a project like this are refined by seeing
+the system run — for example, the decision to compile Tailwind CSS
+locally rather than load it from a public CDN (discussed in Section 4.3)
+was made only after the CDN-based approach was seen to fail in the
+actual deployment environment, something that would not have surfaced
+from design documents alone. It is also worth recording candidly that
+the project’s original specification document anticipated SQLite (via
+<code>better-sqlite3</code>) as the persistence layer; the system as
+actually implemented instead uses a JSON document file
+(<code>data/db.json</code>) managed through a small custom module
+(<code>data/store.js</code>). This is exactly the kind of adjustment an
+iterative approach is meant to absorb: the simpler flat-file store was
+sufficient for the scope actually being built and removed a
+native-module dependency, so the plan was revised rather than followed
+rigidly.</p>
+<h2 id="requirements-analysis">3.6 Requirements Analysis</h2>
+<h3 id="functional-requirements">3.6.1 Functional Requirements</h3>
+<p>The functional requirements below were derived directly from the
+three user roles the system supports — student, vendor and administrator
+— and correspond one-to-one with routes implemented in
+<code>routes/auth.js</code>, <code>routes/student.js</code>,
+<code>routes/vendor.js</code> and <code>routes/admin.js</code>.</p>
+<p><strong>Table 3.1: Functional Requirements</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>No.</th>
+<th>Requirement</th>
+<th>Implemented by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR1</td>
+<td>A visitor shall be able to register as either a student or a vendor,
+supplying role-specific fields (business name and description for
+vendors).</td>
+<td><code>POST /register</code></td>
+</tr>
+<tr>
+<td>FR2</td>
+<td>A registered user shall be able to log in with an email and
+password, and log out.</td>
+<td><code>POST /login</code>, <code>POST /logout</code></td>
+</tr>
+<tr>
+<td>FR3</td>
+<td>A newly registered vendor account shall remain inactive (“pending”)
+until an administrator approves it.</td>
+<td><code>status</code> field on <code>users</code>; enforced at login
+in <code>routes/auth.js</code></td>
+</tr>
+<tr>
+<td>FR4</td>
+<td>A logged-in student shall be able to browse a list of active
+(approved) vendors.</td>
+<td><code>GET /vendors</code></td>
+</tr>
+<tr>
+<td>FR5</td>
+<td>A student shall be able to view a specific vendor’s menu with item
+names and prices.</td>
+<td><code>GET /vendors/:id</code></td>
+</tr>
+<tr>
+<td>FR6</td>
+<td>A student shall be able to build a cart of menu items and quantities
+before ordering.</td>
+<td>Client-side cart logic in <code>views/vendor-menu.ejs</code></td>
+</tr>
+<tr>
+<td>FR7</td>
+<td>A student shall be able to submit the cart as an order, which is
+recorded with an itemised price snapshot.</td>
+<td><code>POST /orders</code></td>
+</tr>
+<tr>
+<td>FR8</td>
+<td>A student shall be able to view their own order history with a
+live-updating status.</td>
+<td><code>GET /orders</code>, <code>GET /api/orders/mine</code></td>
+</tr>
+<tr>
+<td>FR9</td>
+<td>A vendor shall be able to view their own incoming, unfulfilled
+orders.</td>
+<td><code>GET /vendor/dashboard</code>,
+<code>GET /api/vendor/orders</code></td>
+</tr>
+<tr>
+<td>FR10</td>
+<td>A vendor shall be able to advance an order through its status
+lifecycle one step at a time.</td>
+<td><code>POST /vendor/orders/:id/advance</code></td>
+</tr>
+<tr>
+<td>FR11</td>
+<td>An administrator shall be able to view platform-wide counts
+(students, active vendors, pending vendors, total orders).</td>
+<td><code>GET /admin/dashboard</code></td>
+</tr>
+<tr>
+<td>FR12</td>
+<td>An administrator shall be able to approve or reject a pending vendor
+account.</td>
+<td><code>POST /admin/vendors/:userId/approve</code>,
+<code>POST /admin/vendors/:userId/reject</code></td>
+</tr>
+<tr>
+<td>FR13</td>
+<td>Rejecting a vendor shall remove that vendor’s business record and
+menu items along with it.</td>
+<td><code>routes/admin.js</code> reject handler</td>
+</tr>
+</tbody>
+</table>
+<h3 id="non-functional-requirements">3.6.2 Non-Functional
+Requirements</h3>
+<p><strong>Table 3.2: Non-Functional Requirements</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>No.</th>
+<th>Requirement</th>
+<th>How it is addressed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NFR1</td>
+<td>Usability</td>
+<td>A single, consistent dark-themed design system (colour palette,
+spacing, typography, reusable component classes) is applied across every
+page so the interface behaves predictably regardless of which role is
+using it.</td>
+</tr>
+<tr>
+<td>NFR2</td>
+<td>Responsiveness</td>
+<td>Layouts use a mobile-first grid (Tailwind CSS breakpoints) so pages
+remain usable on phone, tablet and desktop widths.</td>
+</tr>
+<tr>
+<td>NFR3</td>
+<td>Security</td>
+<td>Passwords are hashed with bcrypt before storage; no plaintext
+password is ever persisted. Role-based access is enforced server-side by
+the <code>requireRole()</code> middleware, not merely hidden in the
+interface.</td>
+</tr>
+<tr>
+<td>NFR4</td>
+<td>Data integrity</td>
+<td>The price of each order item is copied into the order record
+(<code>priceAtOrder</code>) at the moment of ordering, so a later change
+to a menu item’s price cannot alter the amount owed on an existing
+order.</td>
+</tr>
+<tr>
+<td>NFR5</td>
+<td>Availability of core styling</td>
+<td>The visual design does not depend on a third-party CDN being
+reachable at runtime; Tailwind CSS is compiled to a local file served by
+the application itself (see Section 4.3).</td>
+</tr>
+<tr>
+<td>NFR6</td>
+<td>Maintainability</td>
+<td>Vendor and menu seed data is defined once in
+<code>data/vendor-catalog.js</code> and consumed by both the full reseed
+script and the incremental “add vendors” script, so the two never drift
+out of sync.</td>
+</tr>
+<tr>
+<td>NFR7</td>
+<td>Graceful degradation</td>
+<td>A missing vendor or menu photo does not break a page; the interface
+falls back to an icon placeholder instead of showing a broken
+image.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="system-design">3.7 System Design</h2>
+<p>CampusBites follows a layered, server-rendered architecture rather
+than a single-page-application design, in keeping with its scope as a
+project built by one developer without a separate front-end build
+pipeline. The layers are:</p>
+<ul>
+<li><strong>Presentation layer</strong> — EJS templates in
+<code>views/</code>, split into page templates and two shared partials
+(<code>views/partials/header.ejs</code>,
+<code>views/partials/footer.ejs</code>) that every page includes, so the
+navigation bar, footer, fonts, icon library and compiled stylesheet only
+need to be defined once.</li>
+<li><strong>Routing / controller layer</strong> — four Express routers
+(<code>routes/auth.js</code>, <code>routes/student.js</code>,
+<code>routes/vendor.js</code>, <code>routes/admin.js</code>), each
+scoped to one area of the system and mounted on the main
+<code>server.js</code> application.</li>
+<li><strong>Middleware layer</strong> — <code>middleware/auth.js</code>
+exposes <code>attachUser</code> (reads the session and exposes the
+current user to every view) and <code>requireRole</code> (blocks a
+request unless the session’s user has one of the allowed roles).</li>
+<li><strong>Data / persistence layer</strong> —
+<code>data/store.js</code> exposes <code>load()</code>,
+<code>save()</code> and a <code>tx()</code> helper that loads the JSON
+file, lets a callback mutate it, and writes it back, giving the rest of
+the application a single, synchronous place where all reads and writes
+happen.</li>
+<li><strong>Client-side behaviour</strong> — small, page-scoped
+<code>&lt;script&gt;</code> blocks (no front-end framework) handle the
+cart on the vendor menu page and the four-second polling used on the
+order-tracking and vendor dashboard pages.</li>
+</ul>
+<p>The request/response cycle is conventional Express: a request enters
+through session and body-parsing middleware, is attached the current
+user, is routed to the matching handler, and that handler either renders
+an EJS view or returns JSON (for the two polling endpoints,
+<code>/api/orders/mine</code> and <code>/api/vendor/orders</code>).
+Static assets — the compiled stylesheet and vendor/menu photos — are
+served directly from the <code>public/</code> directory by Express’s
+built-in static file middleware.</p>
+<h2 id="database-design">3.8 Database Design</h2>
+<p>The system’s data is persisted as a single JSON document
+(<code>data/db.json</code>) containing five collections —
+<code>users</code>, <code>vendors</code>, <code>menuItems</code>,
+<code>orders</code> and <code>orderItems</code> — plus a
+<code>counters</code> object used to generate sequential integer IDs.
+Although the storage mechanism is a flat file rather than a relational
+database engine, the five collections are still designed relationally:
+each record carries foreign-key-style references to the record it
+belongs to, and the relationships between them are exactly what would be
+expressed as foreign keys in a SQL schema.</p>
+<p><strong>Table 3.3: users</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Primary key</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Full name</td>
+</tr>
+<tr>
+<td>email</td>
+<td>string</td>
+<td>Login identifier, must be unique</td>
+</tr>
+<tr>
+<td>passwordHash</td>
+<td>string</td>
+<td>bcrypt hash of the password (cost factor 8)</td>
+</tr>
+<tr>
+<td>role</td>
+<td>enum</td>
+<td><code>student</code> | <code>vendor</code> | <code>admin</code></td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum</td>
+<td><code>active</code> | <code>pending</code> | <code>rejected</code>
+(vendors only meaningfully use
+<code>pending</code>/<code>rejected</code>)</td>
+</tr>
+<tr>
+<td>createdAt</td>
+<td>ISO datetime</td>
+<td>Account creation timestamp</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 3.4: vendors</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Primary key</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>integer</td>
+<td>Foreign key → <code>users.id</code> (the account that owns this
+vendor profile)</td>
+</tr>
+<tr>
+<td>businessName</td>
+<td>string</td>
+<td>Public-facing business name</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>Short description shown on the vendor listing and menu page</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 3.5: menuItems</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Primary key</td>
+</tr>
+<tr>
+<td>vendorId</td>
+<td>integer</td>
+<td>Foreign key → <code>vendors.id</code></td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>Dish or product name</td>
+</tr>
+<tr>
+<td>price</td>
+<td>number</td>
+<td>Price in naira</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 3.6: orders</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Primary key</td>
+</tr>
+<tr>
+<td>studentId</td>
+<td>integer</td>
+<td>Foreign key → <code>users.id</code> (the student who placed the
+order)</td>
+</tr>
+<tr>
+<td>vendorId</td>
+<td>integer</td>
+<td>Foreign key → <code>vendors.id</code></td>
+</tr>
+<tr>
+<td>status</td>
+<td>enum</td>
+<td><code>pending</code> → <code>preparing</code> → <code>ready</code> →
+<code>completed</code></td>
+</tr>
+<tr>
+<td>createdAt</td>
+<td>ISO datetime</td>
+<td>Order placement timestamp</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 3.7: orderItems</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id</td>
+<td>integer</td>
+<td>Primary key</td>
+</tr>
+<tr>
+<td>orderId</td>
+<td>integer</td>
+<td>Foreign key → <code>orders.id</code></td>
+</tr>
+<tr>
+<td>menuItemId</td>
+<td>integer</td>
+<td>Foreign key → <code>menuItems.id</code></td>
+</tr>
+<tr>
+<td>quantity</td>
+<td>integer</td>
+<td>Quantity ordered</td>
+</tr>
+<tr>
+<td>priceAtOrder</td>
+<td>number</td>
+<td>Snapshot of the menu item’s price at the moment the order was
+placed</td>
+</tr>
+</tbody>
+</table>
+<p>The relationships between these six tables are shown as a class
+diagram in Figure 3.2 (Section 3.9.2): a user owns at most one vendor
+profile; a user (as a student) places many orders; a vendor offers many
+menu items and receives many orders; and an order contains many order
+items, each of which references the menu item it was ordered from.</p>
+<h2 id="unified-modeling-language-uml-diagrams">3.9 Unified Modeling
+Language (UML) Diagrams</h2>
+<h3 id="use-case-diagram">3.9.1 Use Case Diagram</h3>
+<p>Figure 3.1 shows the use cases available to each of the three actors.
+Login/Logout is shown once, under Student, to avoid repeating an
+identical use case three times; all three roles authenticate through the
+same mechanism, and which further use cases a logged-in session can
+reach is decided by the <code>requireRole()</code> middleware rather
+than by the interface.</p>
+<figure>
+<img src="diagrams/fig3-1-use-case-diagram.png"
+alt="Figure 3.1: Use Case Diagram" />
+<figcaption aria-hidden="true">Figure 3.1: Use Case Diagram</figcaption>
+</figure>
+<h3 id="class-diagram">3.9.2 Class Diagram</h3>
+<p>Figure 3.2 models the five persisted entities described in Section
+3.8 as classes, with the multiplicities of the relationship between each
+pair.</p>
+<figure>
+<img src="diagrams/fig3-2-class-diagram.png"
+alt="Figure 3.2: Class Diagram" />
+<figcaption aria-hidden="true">Figure 3.2: Class Diagram</figcaption>
+</figure>
+<h3 id="sequence-diagram">3.9.3 Sequence Diagram</h3>
+<p>Figure 3.3 traces a single, representative interaction — a student
+placing an order — across the four collaborating parts of the system:
+the browser, the client-side cart script, the Express route handling
+<code>POST /orders</code>, and the <code>store.js</code> persistence
+module. It reflects the actual control flow in
+<code>routes/student.js</code>, including the price-snapshot step and
+the subsequent polling that populates the order-tracking page.</p>
+<figure>
+<img src="diagrams/fig3-3-sequence-diagram.png"
+alt="Figure 3.3: Sequence Diagram" />
+<figcaption aria-hidden="true">Figure 3.3: Sequence Diagram</figcaption>
+</figure>
+<h3 id="activity-diagram">3.9.4 Activity Diagram</h3>
+<p>Figure 3.4 models the order status lifecycle itself, from the moment
+a student places an order to the moment it is marked completed. The
+dotted branch is included deliberately to record a real, current
+limitation: there is no cancellation activity implemented, so an order
+left unattended by a vendor simply remains in the “pending” state
+indefinitely.</p>
+<figure>
+<img src="diagrams/fig3-4-activity-diagram.png"
+alt="Figure 3.4: Activity Diagram" />
+<figcaption aria-hidden="true">Figure 3.4: Activity Diagram</figcaption>
+</figure>
+<h2 id="system-flowchart">3.10 System Flowchart</h2>
+<p>Figure 3.5 gives an overall, role-agnostic view of how a single visit
+to the system is handled, from the initial session check through to the
+point where the flow branches into the student, vendor and administrator
+paths described individually in Figures 3.1–3.4.</p>
+<figure>
+<img src="diagrams/fig3-5-system-flowchart.png"
+alt="Figure 3.5: System Flowchart" />
+<figcaption aria-hidden="true">Figure 3.5: System Flowchart</figcaption>
+</figure>
+</body>
+</html>

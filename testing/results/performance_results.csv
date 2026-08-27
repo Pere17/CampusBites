@@ -1,0 +1,9 @@
+id,operation,runs,avg,min,max,result
+T055,POST /login (valid admin credentials),20,57.04,35.14,117.43,PASS (<1s)
+T056,GET /vendors (menu/vendor list load),20,29.06,17.04,38.54,PASS (<1s)
+T057,GET /vendors/:id (single vendor menu load),20,31.26,23.09,41.10,PASS (<1s)
+T058,GET /api/orders/mine (order tracking poll),20,13.67,8.72,19.01,PASS (<1s)
+T059,GET /api/vendor/orders (vendor dashboard poll),20,16.04,9.17,24.99,PASS (<1s)
+T060,GET /admin/dashboard (admin stats load),20,26.08,19.48,33.95,PASS (<1s)
+T061,"POST /orders (order submission, measured across 40 real order placements above)",40,37.13,21.74,50.11,PASS (<1s)
+T062,"POST /vendor/orders/:id/advance (order status update, measured across 60 real status transitions above)",60,39.81,17.69,82.40,PASS (<1s)

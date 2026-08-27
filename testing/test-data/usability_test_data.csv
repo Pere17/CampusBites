@@ -1,0 +1,15 @@
+participant_id,participant_type,data_label,ease_of_registration,ease_of_browsing_menus,ease_of_placing_orders,clarity_of_order_status,ease_of_order_management,overall_usefulness,overall_satisfaction
+P01,student,SYNTHETIC_TEST_DATA,5,5,4,5,,4,5
+P02,student,SYNTHETIC_TEST_DATA,4,5,5,4,,5,4
+P03,student,SYNTHETIC_TEST_DATA,5,4,4,5,,4,4
+P04,student,SYNTHETIC_TEST_DATA,4,4,5,4,,5,5
+P05,student,SYNTHETIC_TEST_DATA,3,5,4,5,,4,4
+P06,student,SYNTHETIC_TEST_DATA,5,5,5,3,,4,4
+P07,student,SYNTHETIC_TEST_DATA,4,4,4,4,,3,4
+P08,student,SYNTHETIC_TEST_DATA,5,3,4,5,,5,4
+P09,student,SYNTHETIC_TEST_DATA,4,5,5,4,,4,5
+P10,student,SYNTHETIC_TEST_DATA,5,4,3,4,,4,3
+V01,vendor,SYNTHETIC_TEST_DATA,4,,,,5,4,4
+V02,vendor,SYNTHETIC_TEST_DATA,5,,,,4,5,5
+V03,vendor,SYNTHETIC_TEST_DATA,4,,,,4,4,4
+V04,vendor,SYNTHETIC_TEST_DATA,3,,,,5,4,3

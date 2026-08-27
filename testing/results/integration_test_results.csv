@@ -1,0 +1,4 @@
+id,flow,input,expected,actual,pass
+T021,Admin -> Vendor Approval -> Vendor Access,"admin approves pre-seeded pending vendor ""Bola's Snack Corner"" (user #10)",user.status changes pending -> active; vendor can now log in and be listed to students,"user.status is now ""active""",true
+T023,Admin -> Vendor Rejection -> Vendor Access Revoked,"admin rejects ""Ada's Small Chops"" (user #23)",user.status -> rejected; vendor row and its menu items removed; vendor cannot log in,"user.status=""rejected"", vendor row present=false",true
+T036,Student -> Order -> Vendor (notification via polling),order #1 placed by faith.amadi@campusbites.uat for Lari's Kitchen,Order appears in vendor's GET /api/vendor/orders feed (the page polls this endpoint every 4s per views/vendor-dashboard.ejs) without any manual refresh trigger from the vendor,order #1 present in vendor feed = true,true

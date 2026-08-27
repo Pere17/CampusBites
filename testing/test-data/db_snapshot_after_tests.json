@@ -1,0 +1,1579 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin",
+      "email": "admin@campusbites.uat",
+      "passwordHash": "$2a$08$8a6VsIPajXJao8Zeh1bUqe4CBJUIf90THun1JujqETOeNO8o0NBAu",
+      "role": "admin",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.460Z"
+    },
+    {
+      "id": 2,
+      "name": "Just Tools Owner",
+      "email": "justtools@campusbites.uat",
+      "passwordHash": "$2a$08$iyE1CeypQnUWrf/7ZfftQuPIvnS3Pm7RdD.CxoOeGsWqgb1RX55AS",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.493Z"
+    },
+    {
+      "id": 3,
+      "name": "Lari's Kitchen Owner",
+      "email": "lariskitchen@campusbites.uat",
+      "passwordHash": "$2a$08$.VKaPGcF0iIo6wOHcpUJ7e4Gv1q/IQzWs7VUDHb9q1c0VSAQRNguW",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.525Z"
+    },
+    {
+      "id": 4,
+      "name": "F & S Owner",
+      "email": "fands@campusbites.uat",
+      "passwordHash": "$2a$08$zXG2SL4xk2.BOXCZBVajlud8uxLCKsNXs3rijObKBqwiP5A7MsDKa",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.559Z"
+    },
+    {
+      "id": 5,
+      "name": "Suya Spot Owner",
+      "email": "suyaspot@campusbites.uat",
+      "passwordHash": "$2a$08$meX/UYQO2jvquXMjUfVOAuuerlmKqvOII.P4wM4DBnkMOlqJqw38u",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.592Z"
+    },
+    {
+      "id": 6,
+      "name": "Golden Crust Bakery Owner",
+      "email": "goldencrust@campusbites.uat",
+      "passwordHash": "$2a$08$s4B8j8V8wPirKOvd9ijw7uy0ScsahywHTB7Um0Ybc4b5cxDICXrX.",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.626Z"
+    },
+    {
+      "id": 7,
+      "name": "Mama Ngozi's Kitchen Owner",
+      "email": "mamangozi@campusbites.uat",
+      "passwordHash": "$2a$08$k/IG/Gvjv7Uj4jQQ8BH1YO5S6X8JghljwRB6kfPEy2pO.NFuTIT2m",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.659Z"
+    },
+    {
+      "id": 8,
+      "name": "Campus Brew & Smoothies Owner",
+      "email": "campusbrew@campusbites.uat",
+      "passwordHash": "$2a$08$wTlaOgrO/5dLVK68oftR6eLMQBxK3a/YpCQLgmRja9qNiMO7NAOSK",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.691Z"
+    },
+    {
+      "id": 9,
+      "name": "Iya Basira Rice Spot Owner",
+      "email": "iyabasira@campusbites.uat",
+      "passwordHash": "$2a$08$1e08Bxf.ZIc20ZYvyD0hYuhdk8XBmWwxv3pRXUFkGstqQRflc5ZAO",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.723Z"
+    },
+    {
+      "id": 10,
+      "name": "Bola (Snack Hustle)",
+      "email": "bolasnacks@campusbites.uat",
+      "passwordHash": "$2a$08$SKUHyRMStf1NdDX6Bz2XD.Hz3dz2zP9BR.sq62N9C1Rt4TGzwJhkC",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.755Z"
+    },
+    {
+      "id": 11,
+      "name": "Demo Student",
+      "email": "student@campusbites.uat",
+      "passwordHash": "$2a$08$di3s3JwGHUCtpGvFiDF/UucfbrW39x4ZKFAyd.Fj0KPQcMmGFv8Yu",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:40:08.788Z"
+    },
+    {
+      "id": 12,
+      "name": "Faith Amadi",
+      "email": "faith.amadi@campusbites.uat",
+      "passwordHash": "$2a$08$CYPcJ9p4aAGTaUb7R1dsN.18GYa3ZoKE.yAYaFOC3L5.Y.OzbIIqC",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:04.800Z"
+    },
+    {
+      "id": 13,
+      "name": "Emmanuel Briggs",
+      "email": "emmanuel.briggs@campusbites.uat",
+      "passwordHash": "$2a$08$FeIcUnQhNGL6u1UvGcbOg.t.uQGcskLsSmT8rBK.Dbh/H2.6rvhkK",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:04.863Z"
+    },
+    {
+      "id": 14,
+      "name": "Blessing Ockiya",
+      "email": "blessing.ockiya@campusbites.uat",
+      "passwordHash": "$2a$08$mrxfoJcdIzF1OG2fCEhomusf3pCKukJ2tu1EuWLOHcrjtWfMiWMTi",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:04.932Z"
+    },
+    {
+      "id": 15,
+      "name": "Daniel Ere",
+      "email": "daniel.ere@campusbites.uat",
+      "passwordHash": "$2a$08$1VmIcf9cuh.KVw.z6cHawOmz/0Yii84ScrsSM3y2me5m7HibqnIxm",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:04.998Z"
+    },
+    {
+      "id": 16,
+      "name": "Grace Ibim",
+      "email": "grace.ibim@campusbites.uat",
+      "passwordHash": "$2a$08$tcyF4UuzfpVHvGzLWdEQoeEy4rP15WBdezxiJAHvpe96VaHzw7DHC",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:05.063Z"
+    },
+    {
+      "id": 17,
+      "name": "Samuel Ogoni",
+      "email": "samuel.ogoni@campusbites.uat",
+      "passwordHash": "$2a$08$CRGBz2q4MsMp/2tQgS.zqOio7fR5lbAllONniGVS9EIZrHOsYLjTa",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:05.131Z"
+    },
+    {
+      "id": 18,
+      "name": "Patience Dukumo",
+      "email": "patience.dukumo@campusbites.uat",
+      "passwordHash": "$2a$08$qBC/tylXF0dueRFG2MssSu2FNvAjFtaLQOtXiN2ODT2rVlAjlyMgu",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:05.211Z"
+    },
+    {
+      "id": 19,
+      "name": "Victor Angaye",
+      "email": "victor.angaye@campusbites.uat",
+      "passwordHash": "$2a$08$dAellCm3SxYMG/pc6hB4UuxjX6Lk.s9Ry7qkZ0bpUgVbOvDLs8Vrq",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:05.292Z"
+    },
+    {
+      "id": 20,
+      "name": "Miracle Sotonye",
+      "email": "miracle.sotonye@campusbites.uat",
+      "passwordHash": "$2a$08$Q0ijkzo/3Wo2JsnSEGIDHeckblDctdigtFpadEx63GsMIftQ4aJR2",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:05.380Z"
+    },
+    {
+      "id": 21,
+      "name": "Joseph Preye",
+      "email": "joseph.preye@campusbites.uat",
+      "passwordHash": "$2a$08$NNgVNlUh7XiCmPS/tNh8deW4t/IqUHnwflJ0bNNypF0PC7iQk2ng6",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:05.475Z"
+    },
+    {
+      "id": 22,
+      "name": "Tonye Fiberesima",
+      "email": "northgategrills@campusbites.uat",
+      "passwordHash": "$2a$08$6RCx8/nyDdqHZru8QSYkYOLDdKbQaq/cuMquD0DxVGwcP9sJEf6na",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:05.620Z"
+    },
+    {
+      "id": 23,
+      "name": "Ada Perekeme",
+      "email": "adasmallchops@campusbites.uat",
+      "passwordHash": "$2a$08$NQu81l2m.DCmmUSXtZgf8unqFG4D8c3mKYr0ETzIjUIK7das0Ya02",
+      "role": "vendor",
+      "status": "rejected",
+      "createdAt": "2026-08-08T11:43:05.683Z"
+    },
+    {
+      "id": 24,
+      "name": "XSS Test",
+      "email": "xsstest@campusbites.uat",
+      "passwordHash": "$2a$08$unjsKx/KRmotF4xhewDFyOePsoJ4fP3EdB62zimvVdJgjgNyYr34W",
+      "role": "vendor",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:11.417Z"
+    },
+    {
+      "id": 25,
+      "name": "Bad Email",
+      "email": "not-an-email",
+      "passwordHash": "$2a$08$2rKYO97Rjj0Th8qdO9hYRuSP5aOxaLJXTIYcvjq36JrwzMo00FXAi",
+      "role": "student",
+      "status": "active",
+      "createdAt": "2026-08-08T11:43:11.718Z"
+    }
+  ],
+  "vendors": [
+    {
+      "id": 1,
+      "userId": 2,
+      "businessName": "Just Tools",
+      "description": "Campus eatery — rice, spaghetti & swallow"
+    },
+    {
+      "id": 2,
+      "userId": 3,
+      "businessName": "Lari's Kitchen",
+      "description": "Student-run kitchen — home-style meals"
+    },
+    {
+      "id": 3,
+      "userId": 4,
+      "businessName": "F & S",
+      "description": "Rice, spaghetti, swallow & snacks"
+    },
+    {
+      "id": 4,
+      "userId": 5,
+      "businessName": "Suya Spot",
+      "description": "Grills & suya — beef, chicken & turkey skewers"
+    },
+    {
+      "id": 5,
+      "userId": 6,
+      "businessName": "Golden Crust Bakery",
+      "description": "Fresh pastries baked daily on campus"
+    },
+    {
+      "id": 6,
+      "userId": 7,
+      "businessName": "Mama Ngozi's Kitchen",
+      "description": "Home-style swallow & soups made fresh"
+    },
+    {
+      "id": 7,
+      "userId": 8,
+      "businessName": "Campus Brew & Smoothies",
+      "description": "Drinks, smoothies & zobo to cool you down"
+    },
+    {
+      "id": 8,
+      "userId": 9,
+      "businessName": "Iya Basira Rice Spot",
+      "description": "Rice specialist — jollof, fried & coconut rice"
+    },
+    {
+      "id": 9,
+      "userId": 10,
+      "businessName": "Bola's Snack Corner",
+      "description": "Student hustle — awaiting admin approval"
+    },
+    {
+      "id": 10,
+      "userId": 22,
+      "businessName": "Northgate Grills",
+      "description": "Established campus outlet — grills, rice & drinks near the north gate"
+    },
+    {
+      "id": 12,
+      "userId": 24,
+      "businessName": "<script>alert('xss')</script>",
+      "description": "test"
+    }
+  ],
+  "menuItems": [
+    {
+      "id": 1,
+      "vendorId": 1,
+      "name": "Rice with Chicken",
+      "price": 4500
+    },
+    {
+      "id": 2,
+      "vendorId": 1,
+      "name": "Rice with Beef",
+      "price": 3000
+    },
+    {
+      "id": 3,
+      "vendorId": 1,
+      "name": "Soft Drinks",
+      "price": 600
+    },
+    {
+      "id": 4,
+      "vendorId": 1,
+      "name": "Bottle Water",
+      "price": 400
+    },
+    {
+      "id": 5,
+      "vendorId": 1,
+      "name": "Spaghetti with Chicken",
+      "price": 4500
+    },
+    {
+      "id": 6,
+      "vendorId": 1,
+      "name": "Spaghetti with Egg",
+      "price": 3500
+    },
+    {
+      "id": 7,
+      "vendorId": 1,
+      "name": "Spaghetti with Beef",
+      "price": 3000
+    },
+    {
+      "id": 8,
+      "vendorId": 1,
+      "name": "Swallow — Egusi Soup",
+      "price": 4500
+    },
+    {
+      "id": 9,
+      "vendorId": 1,
+      "name": "Swallow — Okro Soup",
+      "price": 4500
+    },
+    {
+      "id": 10,
+      "vendorId": 1,
+      "name": "Swallow — Vegetable",
+      "price": 4500
+    },
+    {
+      "id": 11,
+      "vendorId": 1,
+      "name": "Swallow — Banga",
+      "price": 4500
+    },
+    {
+      "id": 12,
+      "vendorId": 2,
+      "name": "Rice with Chicken",
+      "price": 4500
+    },
+    {
+      "id": 13,
+      "vendorId": 2,
+      "name": "Rice with Beef",
+      "price": 2500
+    },
+    {
+      "id": 14,
+      "vendorId": 2,
+      "name": "Bottle Water",
+      "price": 300
+    },
+    {
+      "id": 15,
+      "vendorId": 2,
+      "name": "Spaghetti with Chicken",
+      "price": 4500
+    },
+    {
+      "id": 16,
+      "vendorId": 2,
+      "name": "Spaghetti with Egg",
+      "price": 2500
+    },
+    {
+      "id": 17,
+      "vendorId": 2,
+      "name": "Spaghetti with Beef",
+      "price": 2000
+    },
+    {
+      "id": 18,
+      "vendorId": 2,
+      "name": "Swallow — Egusi Soup",
+      "price": 3500
+    },
+    {
+      "id": 19,
+      "vendorId": 2,
+      "name": "Swallow — Okro Soup",
+      "price": 3500
+    },
+    {
+      "id": 20,
+      "vendorId": 2,
+      "name": "Swallow — Vegetable",
+      "price": 3500
+    },
+    {
+      "id": 21,
+      "vendorId": 2,
+      "name": "Swallow — Banga",
+      "price": 3500
+    },
+    {
+      "id": 22,
+      "vendorId": 3,
+      "name": "Rice with Chicken",
+      "price": 4500
+    },
+    {
+      "id": 23,
+      "vendorId": 3,
+      "name": "Rice with Big Chicken",
+      "price": 8000
+    },
+    {
+      "id": 24,
+      "vendorId": 3,
+      "name": "Rice with Beef",
+      "price": 3500
+    },
+    {
+      "id": 25,
+      "vendorId": 3,
+      "name": "Soft Drinks",
+      "price": 600
+    },
+    {
+      "id": 26,
+      "vendorId": 3,
+      "name": "Bottle Water",
+      "price": 400
+    },
+    {
+      "id": 27,
+      "vendorId": 3,
+      "name": "Spaghetti with Chicken",
+      "price": 4500
+    },
+    {
+      "id": 28,
+      "vendorId": 3,
+      "name": "Spaghetti with Egg",
+      "price": 3500
+    },
+    {
+      "id": 29,
+      "vendorId": 3,
+      "name": "Spaghetti with Beef",
+      "price": 3000
+    },
+    {
+      "id": 30,
+      "vendorId": 3,
+      "name": "Swallow — Egusi Soup",
+      "price": 4500
+    },
+    {
+      "id": 31,
+      "vendorId": 3,
+      "name": "Swallow — Vegetable",
+      "price": 4500
+    },
+    {
+      "id": 32,
+      "vendorId": 3,
+      "name": "Snack — Meatpie",
+      "price": 1000
+    },
+    {
+      "id": 33,
+      "vendorId": 3,
+      "name": "Snack — Chicken Bread",
+      "price": 1000
+    },
+    {
+      "id": 34,
+      "vendorId": 3,
+      "name": "Snack — Milky Doughnuts",
+      "price": 1000
+    },
+    {
+      "id": 35,
+      "vendorId": 3,
+      "name": "Snack — Sausage Roll",
+      "price": 1000
+    },
+    {
+      "id": 36,
+      "vendorId": 4,
+      "name": "Beef Suya",
+      "price": 1500
+    },
+    {
+      "id": 37,
+      "vendorId": 4,
+      "name": "Chicken Suya",
+      "price": 1500
+    },
+    {
+      "id": 38,
+      "vendorId": 4,
+      "name": "Turkey Suya",
+      "price": 2000
+    },
+    {
+      "id": 39,
+      "vendorId": 4,
+      "name": "Suya Wrap",
+      "price": 2000
+    },
+    {
+      "id": 40,
+      "vendorId": 4,
+      "name": "Soft Drinks",
+      "price": 600
+    },
+    {
+      "id": 41,
+      "vendorId": 4,
+      "name": "Bottle Water",
+      "price": 400
+    },
+    {
+      "id": 42,
+      "vendorId": 5,
+      "name": "Snack — Meatpie",
+      "price": 1000
+    },
+    {
+      "id": 43,
+      "vendorId": 5,
+      "name": "Snack — Chicken Bread",
+      "price": 1000
+    },
+    {
+      "id": 44,
+      "vendorId": 5,
+      "name": "Snack — Sausage Roll",
+      "price": 1000
+    },
+    {
+      "id": 45,
+      "vendorId": 5,
+      "name": "Snack — Milky Doughnuts",
+      "price": 1000
+    },
+    {
+      "id": 46,
+      "vendorId": 5,
+      "name": "Cupcake",
+      "price": 800
+    },
+    {
+      "id": 47,
+      "vendorId": 5,
+      "name": "Bread Loaf",
+      "price": 1200
+    },
+    {
+      "id": 48,
+      "vendorId": 6,
+      "name": "Swallow — Egusi Soup",
+      "price": 4500
+    },
+    {
+      "id": 49,
+      "vendorId": 6,
+      "name": "Swallow — Okro Soup",
+      "price": 4500
+    },
+    {
+      "id": 50,
+      "vendorId": 6,
+      "name": "Swallow — Vegetable",
+      "price": 4500
+    },
+    {
+      "id": 51,
+      "vendorId": 6,
+      "name": "Amala & Ewedu",
+      "price": 3500
+    },
+    {
+      "id": 52,
+      "vendorId": 6,
+      "name": "Pounded Yam & Egusi",
+      "price": 4000
+    },
+    {
+      "id": 53,
+      "vendorId": 6,
+      "name": "Bottle Water",
+      "price": 400
+    },
+    {
+      "id": 54,
+      "vendorId": 7,
+      "name": "Zobo (bottle)",
+      "price": 500
+    },
+    {
+      "id": 55,
+      "vendorId": 7,
+      "name": "Chapman",
+      "price": 700
+    },
+    {
+      "id": 56,
+      "vendorId": 7,
+      "name": "Fresh Smoothie",
+      "price": 1200
+    },
+    {
+      "id": 57,
+      "vendorId": 7,
+      "name": "Iced Coffee",
+      "price": 1000
+    },
+    {
+      "id": 58,
+      "vendorId": 7,
+      "name": "Soft Drinks",
+      "price": 600
+    },
+    {
+      "id": 59,
+      "vendorId": 7,
+      "name": "Bottle Water",
+      "price": 400
+    },
+    {
+      "id": 60,
+      "vendorId": 8,
+      "name": "Jollof Rice",
+      "price": 3000
+    },
+    {
+      "id": 61,
+      "vendorId": 8,
+      "name": "Fried Rice",
+      "price": 3000
+    },
+    {
+      "id": 62,
+      "vendorId": 8,
+      "name": "Coconut Rice",
+      "price": 3500
+    },
+    {
+      "id": 63,
+      "vendorId": 8,
+      "name": "Rice with Chicken",
+      "price": 4500
+    },
+    {
+      "id": 64,
+      "vendorId": 8,
+      "name": "Rice with Beef",
+      "price": 3000
+    },
+    {
+      "id": 65,
+      "vendorId": 8,
+      "name": "Soft Drinks",
+      "price": 600
+    },
+    {
+      "id": 66,
+      "vendorId": 9,
+      "name": "Puff Puff (5pcs)",
+      "price": 500
+    },
+    {
+      "id": 67,
+      "vendorId": 9,
+      "name": "Chin Chin (cup)",
+      "price": 500
+    },
+    {
+      "id": 68,
+      "vendorId": 9,
+      "name": "Zobo (bottle)",
+      "price": 500
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "studentId": 12,
+      "vendorId": 2,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:06.182Z"
+    },
+    {
+      "id": 2,
+      "studentId": 13,
+      "vendorId": 7,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:06.214Z"
+    },
+    {
+      "id": 3,
+      "studentId": 14,
+      "vendorId": 3,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:06.267Z"
+    },
+    {
+      "id": 4,
+      "studentId": 15,
+      "vendorId": 2,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:06.305Z"
+    },
+    {
+      "id": 5,
+      "studentId": 16,
+      "vendorId": 4,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:06.341Z"
+    },
+    {
+      "id": 6,
+      "studentId": 17,
+      "vendorId": 3,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:06.379Z"
+    },
+    {
+      "id": 7,
+      "studentId": 18,
+      "vendorId": 1,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:06.436Z"
+    },
+    {
+      "id": 8,
+      "studentId": 19,
+      "vendorId": 7,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:06.486Z"
+    },
+    {
+      "id": 9,
+      "studentId": 20,
+      "vendorId": 7,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:06.524Z"
+    },
+    {
+      "id": 10,
+      "studentId": 21,
+      "vendorId": 8,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:06.569Z"
+    },
+    {
+      "id": 11,
+      "studentId": 12,
+      "vendorId": 6,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:06.607Z"
+    },
+    {
+      "id": 12,
+      "studentId": 13,
+      "vendorId": 7,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:06.667Z"
+    },
+    {
+      "id": 13,
+      "studentId": 14,
+      "vendorId": 2,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:06.718Z"
+    },
+    {
+      "id": 14,
+      "studentId": 15,
+      "vendorId": 2,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:06.767Z"
+    },
+    {
+      "id": 15,
+      "studentId": 16,
+      "vendorId": 1,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:06.818Z"
+    },
+    {
+      "id": 16,
+      "studentId": 18,
+      "vendorId": 1,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:06.854Z"
+    },
+    {
+      "id": 17,
+      "studentId": 19,
+      "vendorId": 4,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:06.902Z"
+    },
+    {
+      "id": 18,
+      "studentId": 20,
+      "vendorId": 2,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:06.951Z"
+    },
+    {
+      "id": 19,
+      "studentId": 21,
+      "vendorId": 7,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:06.989Z"
+    },
+    {
+      "id": 20,
+      "studentId": 12,
+      "vendorId": 5,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:07.032Z"
+    },
+    {
+      "id": 21,
+      "studentId": 13,
+      "vendorId": 8,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:07.065Z"
+    },
+    {
+      "id": 22,
+      "studentId": 14,
+      "vendorId": 1,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:07.099Z"
+    },
+    {
+      "id": 23,
+      "studentId": 15,
+      "vendorId": 6,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:07.134Z"
+    },
+    {
+      "id": 24,
+      "studentId": 16,
+      "vendorId": 9,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:07.163Z"
+    },
+    {
+      "id": 25,
+      "studentId": 17,
+      "vendorId": 4,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:07.199Z"
+    },
+    {
+      "id": 26,
+      "studentId": 18,
+      "vendorId": 9,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:07.233Z"
+    },
+    {
+      "id": 27,
+      "studentId": 19,
+      "vendorId": 9,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:07.264Z"
+    },
+    {
+      "id": 28,
+      "studentId": 20,
+      "vendorId": 3,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:07.299Z"
+    },
+    {
+      "id": 29,
+      "studentId": 21,
+      "vendorId": 6,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:07.333Z"
+    },
+    {
+      "id": 30,
+      "studentId": 12,
+      "vendorId": 4,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:07.363Z"
+    },
+    {
+      "id": 31,
+      "studentId": 13,
+      "vendorId": 9,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:07.400Z"
+    },
+    {
+      "id": 32,
+      "studentId": 14,
+      "vendorId": 3,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:07.432Z"
+    },
+    {
+      "id": 33,
+      "studentId": 16,
+      "vendorId": 1,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:07.459Z"
+    },
+    {
+      "id": 34,
+      "studentId": 17,
+      "vendorId": 7,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:07.499Z"
+    },
+    {
+      "id": 35,
+      "studentId": 18,
+      "vendorId": 5,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:07.531Z"
+    },
+    {
+      "id": 36,
+      "studentId": 19,
+      "vendorId": 8,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:07.565Z"
+    },
+    {
+      "id": 37,
+      "studentId": 20,
+      "vendorId": 7,
+      "status": "pending",
+      "createdAt": "2026-08-08T11:43:07.601Z"
+    },
+    {
+      "id": 38,
+      "studentId": 21,
+      "vendorId": 5,
+      "status": "preparing",
+      "createdAt": "2026-08-08T11:43:07.647Z"
+    },
+    {
+      "id": 39,
+      "studentId": 12,
+      "vendorId": 5,
+      "status": "ready",
+      "createdAt": "2026-08-08T11:43:07.709Z"
+    },
+    {
+      "id": 40,
+      "studentId": 13,
+      "vendorId": 3,
+      "status": "completed",
+      "createdAt": "2026-08-08T11:43:07.767Z"
+    }
+  ],
+  "orderItems": [
+    {
+      "id": 1,
+      "orderId": 1,
+      "menuItemId": 18,
+      "quantity": 3,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 2,
+      "orderId": 1,
+      "menuItemId": 21,
+      "quantity": 2,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 3,
+      "orderId": 1,
+      "menuItemId": 14,
+      "quantity": 2,
+      "priceAtOrder": 300
+    },
+    {
+      "id": 4,
+      "orderId": 2,
+      "menuItemId": 55,
+      "quantity": 1,
+      "priceAtOrder": 700
+    },
+    {
+      "id": 5,
+      "orderId": 2,
+      "menuItemId": 58,
+      "quantity": 1,
+      "priceAtOrder": 600
+    },
+    {
+      "id": 6,
+      "orderId": 2,
+      "menuItemId": 56,
+      "quantity": 3,
+      "priceAtOrder": 1200
+    },
+    {
+      "id": 7,
+      "orderId": 3,
+      "menuItemId": 32,
+      "quantity": 3,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 8,
+      "orderId": 4,
+      "menuItemId": 15,
+      "quantity": 2,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 9,
+      "orderId": 5,
+      "menuItemId": 38,
+      "quantity": 2,
+      "priceAtOrder": 2000
+    },
+    {
+      "id": 10,
+      "orderId": 5,
+      "menuItemId": 39,
+      "quantity": 1,
+      "priceAtOrder": 2000
+    },
+    {
+      "id": 11,
+      "orderId": 5,
+      "menuItemId": 41,
+      "quantity": 2,
+      "priceAtOrder": 400
+    },
+    {
+      "id": 12,
+      "orderId": 6,
+      "menuItemId": 28,
+      "quantity": 3,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 13,
+      "orderId": 6,
+      "menuItemId": 30,
+      "quantity": 1,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 14,
+      "orderId": 7,
+      "menuItemId": 8,
+      "quantity": 3,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 15,
+      "orderId": 7,
+      "menuItemId": 1,
+      "quantity": 1,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 16,
+      "orderId": 8,
+      "menuItemId": 57,
+      "quantity": 2,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 17,
+      "orderId": 9,
+      "menuItemId": 54,
+      "quantity": 3,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 18,
+      "orderId": 9,
+      "menuItemId": 54,
+      "quantity": 2,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 19,
+      "orderId": 10,
+      "menuItemId": 61,
+      "quantity": 3,
+      "priceAtOrder": 3000
+    },
+    {
+      "id": 20,
+      "orderId": 10,
+      "menuItemId": 60,
+      "quantity": 2,
+      "priceAtOrder": 3000
+    },
+    {
+      "id": 21,
+      "orderId": 10,
+      "menuItemId": 64,
+      "quantity": 3,
+      "priceAtOrder": 3000
+    },
+    {
+      "id": 22,
+      "orderId": 11,
+      "menuItemId": 48,
+      "quantity": 1,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 23,
+      "orderId": 11,
+      "menuItemId": 49,
+      "quantity": 1,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 24,
+      "orderId": 12,
+      "menuItemId": 58,
+      "quantity": 2,
+      "priceAtOrder": 600
+    },
+    {
+      "id": 25,
+      "orderId": 12,
+      "menuItemId": 57,
+      "quantity": 2,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 26,
+      "orderId": 12,
+      "menuItemId": 54,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 27,
+      "orderId": 13,
+      "menuItemId": 20,
+      "quantity": 1,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 28,
+      "orderId": 13,
+      "menuItemId": 17,
+      "quantity": 2,
+      "priceAtOrder": 2000
+    },
+    {
+      "id": 29,
+      "orderId": 14,
+      "menuItemId": 18,
+      "quantity": 1,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 30,
+      "orderId": 14,
+      "menuItemId": 21,
+      "quantity": 1,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 31,
+      "orderId": 15,
+      "menuItemId": 4,
+      "quantity": 2,
+      "priceAtOrder": 400
+    },
+    {
+      "id": 32,
+      "orderId": 15,
+      "menuItemId": 8,
+      "quantity": 1,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 33,
+      "orderId": 15,
+      "menuItemId": 6,
+      "quantity": 2,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 34,
+      "orderId": 16,
+      "menuItemId": 10,
+      "quantity": 2,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 35,
+      "orderId": 16,
+      "menuItemId": 11,
+      "quantity": 3,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 36,
+      "orderId": 17,
+      "menuItemId": 39,
+      "quantity": 3,
+      "priceAtOrder": 2000
+    },
+    {
+      "id": 37,
+      "orderId": 17,
+      "menuItemId": 40,
+      "quantity": 2,
+      "priceAtOrder": 600
+    },
+    {
+      "id": 38,
+      "orderId": 18,
+      "menuItemId": 18,
+      "quantity": 1,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 39,
+      "orderId": 18,
+      "menuItemId": 21,
+      "quantity": 1,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 40,
+      "orderId": 19,
+      "menuItemId": 55,
+      "quantity": 1,
+      "priceAtOrder": 700
+    },
+    {
+      "id": 41,
+      "orderId": 19,
+      "menuItemId": 54,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 42,
+      "orderId": 19,
+      "menuItemId": 57,
+      "quantity": 2,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 43,
+      "orderId": 20,
+      "menuItemId": 44,
+      "quantity": 1,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 44,
+      "orderId": 20,
+      "menuItemId": 47,
+      "quantity": 1,
+      "priceAtOrder": 1200
+    },
+    {
+      "id": 45,
+      "orderId": 20,
+      "menuItemId": 45,
+      "quantity": 1,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 46,
+      "orderId": 21,
+      "menuItemId": 61,
+      "quantity": 3,
+      "priceAtOrder": 3000
+    },
+    {
+      "id": 47,
+      "orderId": 21,
+      "menuItemId": 63,
+      "quantity": 1,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 48,
+      "orderId": 22,
+      "menuItemId": 3,
+      "quantity": 1,
+      "priceAtOrder": 600
+    },
+    {
+      "id": 49,
+      "orderId": 22,
+      "menuItemId": 5,
+      "quantity": 3,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 50,
+      "orderId": 23,
+      "menuItemId": 49,
+      "quantity": 1,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 51,
+      "orderId": 24,
+      "menuItemId": 67,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 52,
+      "orderId": 24,
+      "menuItemId": 67,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 53,
+      "orderId": 24,
+      "menuItemId": 68,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 54,
+      "orderId": 25,
+      "menuItemId": 38,
+      "quantity": 1,
+      "priceAtOrder": 2000
+    },
+    {
+      "id": 55,
+      "orderId": 25,
+      "menuItemId": 38,
+      "quantity": 1,
+      "priceAtOrder": 2000
+    },
+    {
+      "id": 56,
+      "orderId": 26,
+      "menuItemId": 66,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 57,
+      "orderId": 26,
+      "menuItemId": 66,
+      "quantity": 3,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 58,
+      "orderId": 27,
+      "menuItemId": 68,
+      "quantity": 3,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 59,
+      "orderId": 27,
+      "menuItemId": 67,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 60,
+      "orderId": 28,
+      "menuItemId": 30,
+      "quantity": 3,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 61,
+      "orderId": 29,
+      "menuItemId": 48,
+      "quantity": 3,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 62,
+      "orderId": 29,
+      "menuItemId": 51,
+      "quantity": 1,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 63,
+      "orderId": 30,
+      "menuItemId": 36,
+      "quantity": 2,
+      "priceAtOrder": 1500
+    },
+    {
+      "id": 64,
+      "orderId": 30,
+      "menuItemId": 40,
+      "quantity": 1,
+      "priceAtOrder": 600
+    },
+    {
+      "id": 65,
+      "orderId": 30,
+      "menuItemId": 40,
+      "quantity": 1,
+      "priceAtOrder": 600
+    },
+    {
+      "id": 66,
+      "orderId": 31,
+      "menuItemId": 66,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 67,
+      "orderId": 31,
+      "menuItemId": 68,
+      "quantity": 1,
+      "priceAtOrder": 500
+    },
+    {
+      "id": 68,
+      "orderId": 32,
+      "menuItemId": 32,
+      "quantity": 1,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 69,
+      "orderId": 33,
+      "menuItemId": 7,
+      "quantity": 1,
+      "priceAtOrder": 3000
+    },
+    {
+      "id": 70,
+      "orderId": 33,
+      "menuItemId": 9,
+      "quantity": 3,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 71,
+      "orderId": 33,
+      "menuItemId": 1,
+      "quantity": 3,
+      "priceAtOrder": 4500
+    },
+    {
+      "id": 72,
+      "orderId": 34,
+      "menuItemId": 57,
+      "quantity": 3,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 73,
+      "orderId": 34,
+      "menuItemId": 55,
+      "quantity": 1,
+      "priceAtOrder": 700
+    },
+    {
+      "id": 74,
+      "orderId": 35,
+      "menuItemId": 42,
+      "quantity": 3,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 75,
+      "orderId": 35,
+      "menuItemId": 46,
+      "quantity": 2,
+      "priceAtOrder": 800
+    },
+    {
+      "id": 76,
+      "orderId": 35,
+      "menuItemId": 44,
+      "quantity": 1,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 77,
+      "orderId": 36,
+      "menuItemId": 61,
+      "quantity": 2,
+      "priceAtOrder": 3000
+    },
+    {
+      "id": 78,
+      "orderId": 36,
+      "menuItemId": 60,
+      "quantity": 2,
+      "priceAtOrder": 3000
+    },
+    {
+      "id": 79,
+      "orderId": 37,
+      "menuItemId": 59,
+      "quantity": 1,
+      "priceAtOrder": 400
+    },
+    {
+      "id": 80,
+      "orderId": 38,
+      "menuItemId": 43,
+      "quantity": 3,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 81,
+      "orderId": 39,
+      "menuItemId": 42,
+      "quantity": 2,
+      "priceAtOrder": 1000
+    },
+    {
+      "id": 82,
+      "orderId": 40,
+      "menuItemId": 24,
+      "quantity": 2,
+      "priceAtOrder": 3500
+    },
+    {
+      "id": 83,
+      "orderId": 40,
+      "menuItemId": 34,
+      "quantity": 1,
+      "priceAtOrder": 1000
+    }
+  ],
+  "counters": {
+    "users": 25,
+    "vendors": 12,
+    "menuItems": 68,
+    "orders": 40,
+    "orderItems": 83
+  }
+}

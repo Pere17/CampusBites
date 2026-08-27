@@ -1,0 +1,110 @@
+<%- include('partials/header') %>
+
+<div class="grid lg:grid-cols-2 gap-10 items-center max-w-5xl mx-auto">
+
+  <div class="hidden lg:block animate-fade-up">
+    <div class="relative">
+      <div class="absolute -top-10 -left-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
+      <div class="relative">
+        <span class="badge bg-primary/10 text-primary border border-primary/30 mb-5">
+          <i data-lucide="utensils-crossed" style="width:13px;height:13px"></i> CampusBites
+        </span>
+        <h1 class="font-display text-4xl font-bold text-ink leading-tight mb-4">Welcome back.<br />Your next meal is a click away.</h1>
+        <p class="text-ink2 mb-8 max-w-sm leading-relaxed">Log in to browse campus vendors, reorder your favorites, and track your food in real time.</p>
+        <ul class="space-y-4">
+          <li class="flex items-center gap-3 text-sm text-ink2">
+            <span class="w-9 h-9 rounded-xl bg-surface border border-line flex items-center justify-center text-success"><i data-lucide="radio" style="width:16px;height:16px"></i></span>
+            Live order status updates
+          </li>
+          <li class="flex items-center gap-3 text-sm text-ink2">
+            <span class="w-9 h-9 rounded-xl bg-surface border border-line flex items-center justify-center text-accent"><i data-lucide="store" style="width:16px;height:16px"></i></span>
+            Every campus vendor in one place
+          </li>
+          <li class="flex items-center gap-3 text-sm text-ink2">
+            <span class="w-9 h-9 rounded-xl bg-surface border border-line flex items-center justify-center text-primary"><i data-lucide="wallet" style="width:16px;height:16px"></i></span>
+            Pay on pickup — no card needed
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-soft p-7 sm:p-9 animate-fade-up w-full max-w-md mx-auto lg:mx-0">
+    <h1 class="font-display text-2xl font-bold text-ink mb-1">Login</h1>
+    <p class="text-sm text-ink3 mb-6">Enter your details to access your account.</p>
+
+    <% if (typeof notice !== 'undefined' && notice) { %>
+      <div class="flex items-start gap-2.5 bg-success/10 border border-success/30 text-success text-sm rounded-xl p-3.5 mb-5">
+        <i data-lucide="check-circle-2" style="width:17px;height:17px" class="mt-0.5 shrink-0"></i>
+        <span><%= notice %></span>
+      </div>
+    <% } %>
+    <% if (error) { %>
+      <div class="flex items-start gap-2.5 bg-danger/10 border border-danger/30 text-danger text-sm rounded-xl p-3.5 mb-5">
+        <i data-lucide="alert-circle" style="width:17px;height:17px" class="mt-0.5 shrink-0"></i>
+        <span><%= error %></span>
+      </div>
+    <% } %>
+
+    <form action="/login" method="POST" class="space-y-4" id="loginForm">
+      <div>
+        <label class="field-label" for="email">Email</label>
+        <div class="relative">
+          <i data-lucide="mail" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink3" style="width:16px;height:16px"></i>
+          <input id="email" type="email" name="email" required autocomplete="email" placeholder="you@campusbites.uat" class="input-field" />
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="field-label !mb-0" for="password">Password</label>
+          <a href="#" class="text-xs text-primary hover:text-primary-hover font-medium">Forgot password?</a>
+        </div>
+        <div class="relative">
+          <i data-lucide="lock" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink3" style="width:16px;height:16px"></i>
+          <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="••••••••" class="input-field !pr-11" />
+          <button type="button" onclick="togglePassword('password', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink3 hover:text-ink2" aria-label="Show password">
+            <i data-lucide="eye" style="width:16px;height:16px"></i>
+          </button>
+        </div>
+      </div>
+
+      <label class="flex items-center gap-2 text-sm text-ink2 cursor-pointer select-none">
+        <input type="checkbox" name="remember" class="w-4 h-4 rounded border-line bg-surface text-primary focus:ring-primary/40 focus:ring-2" />
+        Remember me
+      </label>
+
+      <button type="submit" id="loginBtn" class="btn-primary w-full">
+        <span id="loginBtnText">Login</span>
+      </button>
+    </form>
+
+    <p class="text-sm text-ink3 mt-5 text-center">No account yet? <a href="/register" class="text-primary hover:text-primary-hover font-medium">Register</a></p>
+
+    <div class="mt-6 border-t border-line pt-4">
+      <p class="text-xs font-semibold text-ink2 mb-1.5 flex items-center gap-1.5"><i data-lucide="info" style="width:13px;height:13px"></i> Demo logins</p>
+      <div class="text-xs text-ink3 space-y-0.5 font-mono">
+        <p>Student: student@campusbites.uat / student123</p>
+        <p>Vendor: justtools@campusbites.uat / vendor123</p>
+        <p>Admin: admin@campusbites.uat / admin123</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePassword(id, btn) {
+    const input = document.getElementById(id);
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    btn.innerHTML = `<i data-lucide="${isHidden ? 'eye-off' : 'eye'}" style="width:16px;height:16px"></i>`;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', function () {
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    document.getElementById('loginBtnText').innerHTML = '<span class="spinner"></span> Logging in…';
+  });
+</script>
+
+<%- include('partials/footer') %>

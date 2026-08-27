@@ -1,0 +1,175 @@
+<%- include('partials/header') %>
+
+<!-- Hero -->
+<section class="relative overflow-hidden">
+  <div class="pointer-events-none absolute -top-24 -left-24 w-72 h-72 bg-primary/20 rounded-full blur-3xl"></div>
+  <div class="pointer-events-none absolute top-10 -right-16 w-72 h-72 bg-accent/10 rounded-full blur-3xl"></div>
+
+  <div class="relative grid lg:grid-cols-2 gap-12 items-center py-8 lg:py-16">
+    <div class="animate-fade-up">
+      <span class="badge bg-primary/10 text-primary border border-primary/30 mb-5">
+        <i data-lucide="sparkles" style="width:13px;height:13px"></i>
+        Now live at University of Africa, Toru-Orua
+      </span>
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.08] tracking-tight text-ink mb-5">
+        Order campus food<br class="hidden sm:block" />
+        without the <span class="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">queue.</span>
+      </h1>
+      <p class="text-lg text-ink2 max-w-lg mb-8 leading-relaxed">
+        CampusBites connects UAT students with campus eateries and student-run food hustles.
+        Browse a menu, place your order, and track it live until it's ready for pickup.
+      </p>
+      <div class="flex flex-wrap gap-4 mb-10">
+        <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+          <% const dest = currentUser.role === 'student' ? '/vendors' : currentUser.role === 'vendor' ? '/vendor/dashboard' : '/admin/dashboard'; %>
+          <a href="<%= dest %>" class="btn-primary text-base">
+            Go to <%= currentUser.role === 'student' ? 'Vendors' : 'Dashboard' %>
+            <i data-lucide="arrow-right" style="width:17px;height:17px"></i>
+          </a>
+        <% } else { %>
+          <a href="/register" class="btn-primary text-base">
+            Get Started
+            <i data-lucide="arrow-right" style="width:17px;height:17px"></i>
+          </a>
+          <a href="/login" class="btn-secondary text-base">Login</a>
+        <% } %>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-ink3">
+        <span class="inline-flex items-center gap-2"><i data-lucide="clock" style="width:16px;height:16px" class="text-success"></i> Live order tracking</span>
+        <span class="inline-flex items-center gap-2"><i data-lucide="badge-check" style="width:16px;height:16px" class="text-success"></i> Verified campus vendors</span>
+        <span class="inline-flex items-center gap-2"><i data-lucide="wallet" style="width:16px;height:16px" class="text-success"></i> Pay on pickup</span>
+      </div>
+    </div>
+
+    <div class="relative animate-fade-up" style="animation-delay:.1s">
+      <div class="relative mx-auto max-w-sm">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/20 blur-2xl rounded-[2rem]"></div>
+        <div class="relative card shadow-soft p-6 animate-float">
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <p class="text-xs text-ink3">Order #128</p>
+              <p class="font-display font-semibold text-ink">Lari's Kitchen</p>
+            </div>
+            <span class="badge bg-success/15 text-success"><i data-lucide="check-circle-2" style="width:13px;height:13px"></i> Ready</span>
+          </div>
+          <ul class="space-y-2.5 mb-5 text-sm">
+            <li class="flex justify-between text-ink2"><span>Jollof Rice &amp; Chicken x1</span><span class="text-ink">₦1,500</span></li>
+            <li class="flex justify-between text-ink2"><span>Zobo Drink x2</span><span class="text-ink">₦600</span></li>
+          </ul>
+          <div class="w-full bg-surface rounded-full h-2 mb-4 overflow-hidden">
+            <div class="bg-gradient-to-r from-primary to-accent h-2 rounded-full" style="width:100%"></div>
+          </div>
+          <div class="flex justify-between items-center border-t border-line pt-4">
+            <span class="text-sm text-ink3">Total</span>
+            <span class="font-display font-bold text-lg text-ink">₦2,100</span>
+          </div>
+        </div>
+        <div class="absolute -bottom-5 -left-6 card shadow-soft px-4 py-3 flex items-center gap-2.5 animate-float" style="animation-delay:.4s">
+          <span class="w-9 h-9 rounded-xl bg-accent/15 flex items-center justify-center text-lg">🍲</span>
+          <div class="text-left">
+            <p class="text-xs text-ink3 leading-tight">Just Tools</p>
+            <p class="text-sm font-semibold text-ink leading-tight">Open now</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="py-10 border-t border-line">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="font-display text-xl font-semibold text-ink">Browse by category</h2>
+  </div>
+  <div class="flex gap-3 overflow-x-auto scrollbar-thin pb-2 -mx-1 px-1">
+    <% const categories = [
+      { label: 'Rice dishes', icon: '🍚' },
+      { label: 'Swallow', icon: '🍲' },
+      { label: 'Snacks', icon: '🥟' },
+      { label: 'Drinks', icon: '🥤' },
+      { label: 'Grills', icon: '🍢' },
+      { label: 'Pastries', icon: '🥐' },
+      { label: 'Small chops', icon: '🍗' }
+    ]; %>
+    <% categories.forEach(c => { %>
+      <a href="/vendors" class="shrink-0 flex items-center gap-2.5 bg-surface hover:bg-card border border-line hover:border-primary/50 rounded-xl px-4 py-3 transition-all duration-200 hover:-translate-y-0.5">
+        <span class="text-xl"><%= c.icon %></span>
+        <span class="text-sm font-medium text-ink2 whitespace-nowrap"><%= c.label %></span>
+      </a>
+    <% }) %>
+  </div>
+</section>
+
+<!-- Roles / how it works -->
+<section class="py-10 border-t border-line">
+  <div class="text-center max-w-2xl mx-auto mb-10">
+    <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink mb-3">Built for everyone on campus</h2>
+    <p class="text-ink2">One platform for students ordering food, vendors fulfilling it, and admins keeping things running smoothly.</p>
+  </div>
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="card p-7 hover:border-primary/40 hover:-translate-y-1 transition-all duration-300 shadow-soft">
+      <div class="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center mb-4">
+        <i data-lucide="graduation-cap" class="text-primary" style="width:22px;height:22px"></i>
+      </div>
+      <h3 class="font-display font-semibold text-lg text-ink mb-2">Students</h3>
+      <p class="text-sm text-ink2 leading-relaxed">Browse vendor menus, place an order, and track it from "received" to "ready" without leaving your seat.</p>
+    </div>
+    <div class="card p-7 hover:border-primary/40 hover:-translate-y-1 transition-all duration-300 shadow-soft">
+      <div class="w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center mb-4">
+        <i data-lucide="chef-hat" class="text-accent" style="width:22px;height:22px"></i>
+      </div>
+      <h3 class="font-display font-semibold text-lg text-ink mb-2">Vendors</h3>
+      <p class="text-sm text-ink2 leading-relaxed">From established campus eateries to student-run food hustles — get notified instantly and manage orders as you cook.</p>
+    </div>
+    <div class="card p-7 hover:border-primary/40 hover:-translate-y-1 transition-all duration-300 shadow-soft">
+      <div class="w-12 h-12 rounded-xl bg-success/15 flex items-center justify-center mb-4">
+        <i data-lucide="shield-check" class="text-success" style="width:22px;height:22px"></i>
+      </div>
+      <h3 class="font-display font-semibold text-lg text-ink mb-2">Admin</h3>
+      <p class="text-sm text-ink2 leading-relaxed">Approve new vendors, keep the platform clean, and see basic stats on activity.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-10 border-t border-line">
+  <h2 class="font-display text-2xl sm:text-3xl font-bold text-ink mb-8 text-center">What students are saying</h2>
+  <div class="grid md:grid-cols-3 gap-6">
+    <% const testimonials = [
+      { quote: "No more standing in the sun waiting for jollof. I order between classes and it's ready by the time I get there.", name: "Amaka", role: "200L Chemistry" },
+      { quote: "As a small food hustle, this got me orders I'd never have gotten just shouting across the hostel.", name: "Tunde", role: "Campus vendor" },
+      { quote: "Tracking my order status live means I actually know when to leave my room. Simple and it works.", name: "Zainab", role: "300L Economics" }
+    ]; %>
+    <% testimonials.forEach(t => { %>
+      <div class="card p-6 shadow-soft">
+        <div class="flex gap-1 text-accent mb-3">
+          <% for (let i=0;i<5;i++) { %><i data-lucide="star" style="width:14px;height:14px" fill="currentColor"></i><% } %>
+        </div>
+        <p class="text-sm text-ink2 leading-relaxed mb-4">"<%= t.quote %>"</p>
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs font-semibold text-white"><%= t.name.charAt(0) %></span>
+          <div>
+            <p class="text-sm font-medium text-ink"><%= t.name %></p>
+            <p class="text-xs text-ink3"><%= t.role %></p>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="py-14 border-t border-line">
+  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary to-accent px-8 py-12 text-center shadow-soft">
+    <div class="absolute -bottom-10 -right-10 w-56 h-56 bg-white/10 rounded-full blur-2xl"></div>
+    <h2 class="font-display text-2xl sm:text-3xl font-bold text-white mb-3 relative">Ready to skip the queue?</h2>
+    <p class="text-white/90 max-w-md mx-auto mb-7 relative">Join CampusBites today and get your next meal without the wait.</p>
+    <% if (typeof currentUser !== 'undefined' && currentUser) { %>
+      <a href="/vendors" class="relative inline-flex items-center gap-2 bg-white text-primary font-semibold px-6 py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200">Browse vendors <i data-lucide="arrow-right" style="width:17px;height:17px"></i></a>
+    <% } else { %>
+      <a href="/register" class="relative inline-flex items-center gap-2 bg-white text-primary font-semibold px-6 py-3 rounded-xl hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200">Create free account <i data-lucide="arrow-right" style="width:17px;height:17px"></i></a>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

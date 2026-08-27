@@ -1,0 +1,102 @@
+<%- include('partials/header') %>
+
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="font-display text-2xl font-bold text-ink">My orders</h1>
+    <p class="text-sm text-ink3 mt-1">Live status updates automatically — no need to refresh.</p>
+  </div>
+  <a href="/vendors" class="btn-secondary !px-4 !py-2 text-sm hidden sm:inline-flex">
+    <i data-lucide="plus" style="width:15px;height:15px"></i> New order
+  </a>
+</div>
+
+<div id="ordersList" class="space-y-4">
+  <% for (let i=0;i<3;i++) { %>
+    <div class="card p-5">
+      <div class="flex justify-between mb-4">
+        <div class="space-y-2">
+          <div class="skeleton h-4 w-32 rounded"></div>
+          <div class="skeleton h-3 w-44 rounded"></div>
+        </div>
+        <div class="skeleton h-6 w-24 rounded-full"></div>
+      </div>
+      <div class="skeleton h-3 w-full rounded mb-2"></div>
+      <div class="skeleton h-3 w-2/3 rounded"></div>
+    </div>
+  <% } %>
+</div>
+
+<script>
+  const STATUS_LABEL = {
+    pending: 'Received — waiting for vendor',
+    preparing: 'Preparing',
+    ready: 'Ready for pickup',
+    completed: 'Picked up'
+  };
+  const STATUS_ICON = {
+    pending: 'clock',
+    preparing: 'flame',
+    ready: 'check-circle-2',
+    completed: 'package-check'
+  };
+  const STATUS_STYLE = {
+    pending: 'bg-accent/15 text-accent',
+    preparing: 'bg-primary/15 text-primary',
+    ready: 'bg-success/15 text-success',
+    completed: 'bg-surface text-ink3'
+  };
+  const STATUS_ORDER = ['pending', 'preparing', 'ready', 'completed'];
+
+  async function loadOrders() {
+    const res = await fetch('/api/orders/mine');
+    const data = await res.json();
+    render(data.orders);
+  }
+
+  function render(orders) {
+    const container = document.getElementById('ordersList');
+    if (orders.length === 0) {
+      container.innerHTML = `
+        <div class="card p-12 text-center">
+          <div class="w-14 h-14 rounded-full bg-surface flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="receipt" class="text-ink3" style="width:24px;height:24px"></i>
+          </div>
+          <p class="text-ink2 font-medium mb-1">No orders yet</p>
+          <p class="text-sm text-ink3 mb-5">You have not placed any orders yet.</p>
+          <a href="/vendors" class="btn-primary !px-5 !py-2.5 text-sm inline-flex">Browse vendors</a>
+        </div>`;
+      if (window.lucide) lucide.createIcons();
+      return;
+    }
+    container.innerHTML = orders.map(o => `
+      <div class="card p-5 hover:border-primary/30 transition-colors duration-200 animate-fade-up">
+        <div class="flex justify-between items-start mb-3 gap-3">
+          <div>
+            <h3 class="font-display font-semibold text-ink">${o.vendorName}</h3>
+            <p class="text-xs text-ink3 mt-0.5">Order #${o.id} — ${new Date(o.createdAt).toLocaleString()}</p>
+          </div>
+          <span class="badge ${STATUS_STYLE[o.status]} shrink-0">
+            <i data-lucide="${STATUS_ICON[o.status]}" style="width:13px;height:13px"></i>
+            ${STATUS_LABEL[o.status]}
+          </span>
+        </div>
+        <ul class="text-sm text-ink2 mb-3 space-y-0.5">
+          ${o.items.map(it => `<li>${it.name} <span class="text-ink3">x${it.quantity}</span></li>`).join('')}
+        </ul>
+        <div class="w-full bg-surface rounded-full h-1.5 mb-4 overflow-hidden">
+          <div class="bg-gradient-to-r from-primary to-accent h-1.5 rounded-full transition-all duration-500" style="width:${(STATUS_ORDER.indexOf(o.status)+1)/STATUS_ORDER.length*100}%"></div>
+        </div>
+        <div class="flex justify-between items-center border-t border-line pt-3">
+          <span class="text-xs text-ink3">Order total</span>
+          <span class="font-display font-bold text-ink">₦${o.total.toLocaleString()}</span>
+        </div>
+      </div>
+    `).join('');
+    if (window.lucide) lucide.createIcons();
+  }
+
+  loadOrders();
+  setInterval(loadOrders, 4000);
+</script>
+
+<%- include('partials/footer') %>

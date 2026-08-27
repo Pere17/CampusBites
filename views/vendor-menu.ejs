@@ -1,0 +1,191 @@
+<%- include('partials/header') %>
+
+<a href="/vendors" class="inline-flex items-center gap-1.5 text-ink3 hover:text-primary text-sm font-medium transition-colors">
+  <i data-lucide="arrow-left" style="width:15px;height:15px"></i> Back to vendors
+</a>
+
+<div class="flex items-start gap-4 mt-4 mb-8">
+  <span class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/25 to-accent/10 flex items-center justify-center text-2xl shrink-0 relative overflow-hidden">
+    🍽️
+    <img
+      src="/images/vendors/<%= slugify(vendor.businessName) %>.jpg"
+      data-ext-index="0"
+      onerror="imgFallback(this, 'vendors/<%= slugify(vendor.businessName) %>')"
+      alt="<%= vendor.businessName %>"
+      class="absolute inset-0 w-full h-full object-cover"
+    />
+  </span>
+  <div>
+    <h1 class="font-display text-2xl font-bold text-ink"><%= vendor.businessName %></h1>
+    <p class="text-ink3 text-sm mt-1"><%= vendor.description %></p>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-8">
+  <div class="lg:col-span-2">
+    <h2 class="font-display font-semibold text-ink mb-4 flex items-center gap-2">
+      <i data-lucide="utensils" style="width:17px;height:17px" class="text-primary"></i> Menu
+    </h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <% items.forEach(item => { %>
+        <div class="card overflow-hidden group flex flex-col justify-between hover:border-primary/30 transition-colors duration-200" id="item-<%= item.id %>">
+          <div class="h-28 bg-surface relative overflow-hidden flex items-center justify-center shrink-0">
+            <span class="text-3xl">🍛</span>
+            <img
+              src="/images/menu/<%= slugify(item.name) %>.jpg"
+              data-ext-index="0"
+              onerror="imgFallback(this, 'menu/<%= slugify(item.name) %>')"
+              alt="<%= item.name %>"
+              class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            />
+          </div>
+          <div class="p-4 flex flex-col flex-1 justify-between">
+            <div class="mb-4">
+              <h3 class="font-medium text-ink leading-snug"><%= item.name %></h3>
+              <p class="text-primary font-display font-bold mt-1">₦<%= item.price.toLocaleString() %></p>
+            </div>
+            <div id="item-btn-<%= item.id %>">
+              <button
+                type="button"
+                class="btn-secondary w-full !py-2 text-sm"
+                onclick="addToCart(<%= item.id %>, '<%= item.name.replace(/'/g, "\\'") %>', <%= item.price %>)"
+              >
+                <i data-lucide="plus" style="width:15px;height:15px"></i> Add
+              </button>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+      <% if (items.length === 0) { %>
+        <p class="text-ink3 text-sm col-span-2">This vendor hasn't added any menu items yet.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="card shadow-soft p-5 h-fit lg:sticky lg:top-20">
+    <h2 class="font-display font-bold text-ink mb-4 flex items-center gap-2">
+      <i data-lucide="shopping-bag" style="width:17px;height:17px" class="text-primary"></i> Your order
+    </h2>
+    <ul id="cartList" class="text-sm space-y-3 mb-4 max-h-64 overflow-y-auto scrollbar-thin">
+      <li class="flex flex-col items-center text-center py-6 text-ink3" id="emptyCartMsg">
+        <i data-lucide="shopping-cart" style="width:28px;height:28px" class="mb-2 opacity-60"></i>
+        No items yet.
+      </li>
+    </ul>
+
+    <div class="flex items-start gap-2 bg-surface rounded-xl p-3 mb-4 text-xs text-ink3">
+      <i data-lucide="clock" style="width:14px;height:14px" class="mt-0.5 shrink-0 text-accent"></i>
+      Ready in ~15–20 min after the vendor accepts your order. Pickup only — pay when you collect it.
+    </div>
+
+    <div class="flex justify-between font-display font-bold text-ink border-t border-line pt-3 mb-4">
+      <span>Total</span>
+      <span id="cartTotal">₦0</span>
+    </div>
+    <form action="/orders" method="POST" onsubmit="return submitOrder(event)">
+      <input type="hidden" name="vendorId" value="<%= vendor.id %>" />
+      <input type="hidden" name="items" id="itemsInput" />
+      <button type="submit" class="btn-primary w-full" id="placeOrderBtn" disabled>
+        <span id="placeOrderBtnText">Place order (pay on pickup)</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const MENU_ITEMS = {
+    <% items.forEach(item => { %>
+      <%= item.id %>: { name: '<%= item.name.replace(/'/g, "\\'") %>', price: <%= item.price %> },
+    <% }) %>
+  };
+
+  const cart = {}; // menuItemId -> { name, price, qty }
+
+  function addToCart(id, name, price) {
+    if (!cart[id]) cart[id] = { name: name || (MENU_ITEMS[id] && MENU_ITEMS[id].name), price: price != null ? price : (MENU_ITEMS[id] && MENU_ITEMS[id].price), qty: 0 };
+    cart[id].qty += 1;
+    renderCart();
+    renderItemButton(id);
+  }
+
+  function removeFromCart(id) {
+    if (!cart[id]) return;
+    cart[id].qty -= 1;
+    if (cart[id].qty <= 0) delete cart[id];
+    renderCart();
+    renderItemButton(id);
+  }
+
+  function renderItemButton(id) {
+    const el = document.getElementById('item-btn-' + id);
+    if (!el) return;
+    const entry = cart[id];
+    if (!entry || entry.qty <= 0) {
+      const item = MENU_ITEMS[id];
+      el.innerHTML = `
+        <button type="button" class="btn-secondary w-full !py-2 text-sm" onclick="addToCart(${id}, '${item.name.replace(/'/g, "\\'")}', ${item.price})">
+          <i data-lucide="plus" style="width:15px;height:15px"></i> Add
+        </button>`;
+    } else {
+      el.innerHTML = `
+        <div class="flex items-center justify-between bg-surface border border-primary/40 rounded-xl px-2 py-1.5">
+          <button type="button" onclick="removeFromCart(${id})" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-card text-ink2 transition-colors" aria-label="Decrease quantity">
+            <i data-lucide="minus" style="width:14px;height:14px"></i>
+          </button>
+          <span class="text-sm font-semibold text-ink">${entry.qty}</span>
+          <button type="button" onclick="addToCart(${id})" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-card text-primary transition-colors" aria-label="Increase quantity">
+            <i data-lucide="plus" style="width:14px;height:14px"></i>
+          </button>
+        </div>`;
+    }
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function renderCart() {
+    const list = document.getElementById('cartList');
+    const ids = Object.keys(cart);
+    list.innerHTML = '';
+    if (ids.length === 0) {
+      list.innerHTML = `
+        <li class="flex flex-col items-center text-center py-6 text-ink3" id="emptyCartMsg">
+          <i data-lucide="shopping-cart" style="width:28px;height:28px" class="mb-2 opacity-60"></i>
+          No items yet.
+        </li>`;
+      if (window.lucide) lucide.createIcons();
+    }
+    let total = 0;
+    ids.forEach((id) => {
+      const it = cart[id];
+      total += it.price * it.qty;
+      const li = document.createElement('li');
+      li.className = 'flex justify-between items-center gap-2 animate-fade-up';
+      li.innerHTML = `
+        <span class="text-ink2 truncate">${it.name} <span class="text-ink3">x${it.qty}</span></span>
+        <span class="flex items-center gap-2 shrink-0">
+          <span class="text-ink font-medium">₦${(it.price * it.qty).toLocaleString()}</span>
+          <button type="button" class="text-ink3 hover:text-danger transition-colors" onclick="removeFromCart(${id})" aria-label="Remove item">
+            <i data-lucide="x" style="width:14px;height:14px"></i>
+          </button>
+        </span>`;
+      list.appendChild(li);
+    });
+    document.getElementById('cartTotal').textContent = '₦' + total.toLocaleString();
+    document.getElementById('placeOrderBtn').disabled = ids.length === 0;
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function submitOrder(e) {
+    const ids = Object.keys(cart);
+    if (ids.length === 0) {
+      e.preventDefault();
+      return false;
+    }
+    const items = ids.map((id) => ({ menuItemId: Number(id), quantity: cart[id].qty }));
+    document.getElementById('itemsInput').value = JSON.stringify(items);
+    document.getElementById('placeOrderBtn').disabled = true;
+    document.getElementById('placeOrderBtnText').innerHTML = '<span class="spinner"></span> Placing order…';
+    return true;
+  }
+</script>
+
+<%- include('partials/footer') %>

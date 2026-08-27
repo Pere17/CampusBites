@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Chapter Four</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="report.css" />
+</head>
+<body>
+<h1 id="chapter-four-system-implementation-testing-and-results">CHAPTER
+FOUR: SYSTEM IMPLEMENTATION, TESTING AND RESULTS</h1>
+<h2 id="introduction">4.1 Introduction</h2>
+<p>Chapter Three described how CampusBites was analysed and designed.
+This chapter describes how that design was actually built, the
+environment and tools used to build it, the interface produced, how the
+finished system was tested, and what the testing showed. All figures,
+data values and outcomes reported in this chapter were taken directly
+from the running application rather than constructed for illustration;
+where a screenshot is shown, it is a screenshot of CampusBites as it
+runs on <code>localhost:3000</code>, and where a data value is quoted,
+it was read from the live <code>data/db.json</code> file at the time of
+writing.</p>
+<h2 id="development-environment">4.2 Development Environment</h2>
+<p>CampusBites was developed and run on a Windows 10 Education machine
+(build 10.0.19045). The server-side runtime is Node.js (v24.18.0) with
+npm (v11.16.0) as the package manager. Development work was carried out
+from a terminal environment offering both Git Bash and PowerShell, and
+the application was exercised and visually verified in Google Chrome,
+the same browser used to produce the screenshots reproduced later in
+this chapter. No cloud hosting, container platform or CI pipeline was
+used at any stage; the project runs as a single local Node process
+listening on port 3000.</p>
+<h2 id="programming-languages-frameworks-and-tools-used">4.3 Programming
+Languages, Frameworks and Tools Used</h2>
+<p><strong>Table 4.1: Languages, frameworks and libraries
+used</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Concern</th>
+<th>Choice</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Server-side language</td>
+<td>JavaScript (Node.js)</td>
+<td>Single language across the whole back end</td>
+</tr>
+<tr>
+<td>Web framework</td>
+<td>Express 4.19</td>
+<td>Routing, middleware, session handling</td>
+</tr>
+<tr>
+<td>View templating</td>
+<td>EJS 3.1</td>
+<td>Server-rendered HTML, partials for header/footer</td>
+</tr>
+<tr>
+<td>Authentication</td>
+<td><code>express-session</code> + <code>bcryptjs</code></td>
+<td>Cookie session (8-hour expiry); passwords hashed, cost factor 8</td>
+</tr>
+<tr>
+<td>Styling</td>
+<td>Tailwind CSS 3.4</td>
+<td>Compiled locally with the Tailwind CLI, <strong>not</strong> loaded
+from a public CDN</td>
+</tr>
+<tr>
+<td>Client-side scripting</td>
+<td>Vanilla JavaScript</td>
+<td>Cart logic and polling; no front-end framework</td>
+</tr>
+<tr>
+<td>Icon set</td>
+<td>Lucide</td>
+<td>Loaded via CDN <code>&lt;script&gt;</code> tag</td>
+</tr>
+<tr>
+<td>Web fonts</td>
+<td>Google Fonts (Inter, Poppins)</td>
+<td>Loaded via CDN <code>&lt;link&gt;</code> tag</td>
+</tr>
+<tr>
+<td>Persistence</td>
+<td>Custom JSON file store (<code>data/store.js</code>)</td>
+<td>No ORM, no external database engine</td>
+</tr>
+</tbody>
+</table>
+<p>One implementation decision is worth explaining in detail because it
+changed during the project rather than being right the first time. The
+interface was originally styled using Tailwind’s “Play CDN” script
+(<code>cdn.tailwindcss.com</code>), which downloads and runs Tailwind’s
+compiler in the browser at page-load time. When the running application
+was checked in an actual browser, every page rendered as unstyled,
+default-browser-font HTML — serif text, blue underlined links, no
+colours, no layout. The clearest evidence of the cause was that an
+element marked with Tailwind’s <code>hidden</code> utility class (the
+vendor-only fields on the registration form) was still visibly showing,
+which is only possible if Tailwind’s generated CSS was never applied at
+all. The CDN script was not loading in that browser environment. The fix
+was to stop depending on a script fetched at runtime: Tailwind was added
+as a development dependency, a <code>tailwind.config.js</code> and
+source stylesheet (<code>src/input.css</code>) were written locally,
+<code>npm run build:css</code> compiles them to a static file
+(<code>public/css/app.css</code>), and Express serves that file directly
+via <code>express.static</code>. The interface has depended on nothing
+but the local file system for its core visual styling since that change.
+This episode is reported in Section 4.8 as a concrete result of system
+testing, since it was testing — not code review — that surfaced it.</p>
+<p>Two further tools were added purely to produce the documentation for
+this project and are not dependencies of the running application itself:
+<code>playwright-core</code>, used to drive a real, installed Chrome
+browser to capture the interface screenshots reproduced in Section 4.6,
+and Pandoc, used to convert this document to Word format.</p>
+<h2 id="database-implementation">4.4 Database Implementation</h2>
+<p>The database layer is implemented as a single JSON file,
+<code>data/db.json</code>, managed exclusively through
+<code>data/store.js</code>. That module exposes three functions:
+<code>load()</code>, which reads and parses the file (creating an empty,
+correctly-shaped file if none exists yet); <code>save(db)</code>, which
+serialises the in-memory object back to disk; and <code>tx(fn)</code>, a
+small synchronous “transaction” helper that loads the database, passes
+it to a callback that mutates it in place, saves the result, and returns
+whatever the callback returned. Every route handler that needs to read
+or write data goes through one of these three functions rather than
+touching the file directly, which keeps all persistence logic in one
+place.</p>
+<p>Two scripts populate the database. <code>data/seed.js</code> performs
+a full reset — it clears every collection and rebuilds the admin
+account, every vendor in <code>data/vendor-catalog.js</code>, and a demo
+student account — and is intended for a brand-new installation.
+<code>data/add-new-vendors.js</code> does the opposite: it compares the
+vendor catalogue against the users already present (by e-mail) and
+inserts only the vendors that are missing, leaving every existing user,
+vendor, order and order item untouched. This second script exists
+because a real student account had already registered and placed a real
+order on the running instance by the time five additional vendors needed
+to be added to the catalogue; running the full reset script at that
+point would have destroyed that genuine data, so the non-destructive
+script was written instead and used in its place. A third utility,
+<code>data/list-images-needed.js</code>, reads whatever vendors and menu
+items currently exist and prints the exact photo filenames the interface
+will look for, so the list of images to source never has to be
+maintained by hand.</p>
+<p>At the time of writing, the live database contains the record counts
+shown in Table 4.2, obtained by querying <code>data/db.json</code>
+directly.</p>
+<p><strong>Table 4.2: Live data snapshot (data/db.json)</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Collection</th>
+<th>Count</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>users</td>
+<td>12</td>
+<td>1 admin, 9 vendor-role accounts (8 active, 1 pending), 2 student
+accounts</td>
+</tr>
+<tr>
+<td>vendors</td>
+<td>9</td>
+<td>8 active (visible to students), 1 pending admin approval</td>
+</tr>
+<tr>
+<td>menuItems</td>
+<td>68</td>
+<td>Across all 9 vendors</td>
+</tr>
+<tr>
+<td>orders</td>
+<td>2</td>
+<td>Both placed against the vendor “Just Tools” during testing</td>
+</tr>
+<tr>
+<td>orderItems</td>
+<td>2</td>
+<td>One line item per order at the time of writing</td>
+</tr>
+</tbody>
+</table>
+<h2 id="system-implementation">4.5 System Implementation</h2>
+<p><strong>Registration and login.</strong> <code>GET /register</code>
+renders a form with a role toggle (student or vendor); choosing “vendor”
+reveals two additional fields, business name and description, via a
+small client-side script rather than a page reload. On submission,
+<code>POST /register</code> validates the required fields, hashes the
+password with bcrypt, and creates the user record; a vendor account is
+created with <code>status: "pending"</code> and cannot log in until an
+administrator approves it, while a student account is created
+<code>active</code> and is logged in immediately.
+<code>POST /login</code> checks the supplied credentials with
+<code>bcrypt.compareSync</code>, rejects a still-pending vendor with an
+explicit message, and otherwise starts a session and redirects the user
+to the page appropriate to their role — <code>/vendors</code> for a
+student, <code>/vendor/dashboard</code> for a vendor,
+<code>/admin/dashboard</code> for an admin.</p>
+<p><strong>Browsing and ordering.</strong> <code>GET /vendors</code>
+lists only vendors whose owning account has
+<code>status: "active"</code>, so a pending or rejected vendor never
+appears to students. <code>GET /vendors/:id</code> renders that vendor’s
+menu items with a client-side cart implemented entirely in the page’s
+own <code>&lt;script&gt;</code> block: an in-memory <code>cart</code>
+object keyed by menu item ID accumulates quantities as items are added,
+a sticky order-summary panel re-renders on every change to show the
+running subtotal, and each menu item’s “Add” button is replaced in place
+by a quantity stepper (minus / count / plus) once that item is in the
+cart, rather than staying a plain button. When the order is submitted,
+the cart is serialised to JSON into a hidden form field and posted to
+<code>POST /orders</code>, which looks up the vendor, creates the order
+record with <code>status: "pending"</code>, and creates one
+<code>orderItem</code> per line with <code>priceAtOrder</code> copied
+from the menu item’s <em>current</em> price at that exact moment — so a
+later price change at the vendor never retroactively changes what an
+existing order is recorded as costing.</p>
+<p><strong>Order tracking.</strong> <code>GET /orders</code> renders a
+page that immediately calls <code>fetch('/api/orders/mine')</code> and
+repeats that call every four seconds, replacing the order list in place
+each time. Each order card shows a status badge and a proportional
+progress bar computed from where the order’s status sits in the sequence
+<code>pending → preparing → ready → completed</code>. There is no
+WebSocket or server-push channel in this implementation; “live” updating
+is achieved by polling, which was an explicit, documented scope decision
+rather than an oversight.</p>
+<p><strong>Vendor dashboard.</strong> <code>GET /vendor/dashboard</code>
+and its companion <code>GET /api/vendor/orders</code> show a vendor only
+their own orders that are not yet completed, each with a single action
+button whose label and target status are computed server-side from a
+<code>NEXT_STATUS</code> map (<code>pending → preparing</code>,
+<code>preparing → ready</code>, <code>ready → completed</code>). A
+vendor cannot skip a step or set an arbitrary status because the only
+value the client can send is “advance to the next status,” and what that
+next status is is decided by the server, not the request.</p>
+<p><strong>Admin dashboard.</strong> <code>GET /admin/dashboard</code>
+computes and displays platform counts (students, active vendors, pending
+vendors, total orders) directly from the live data on every request
+rather than from a cached figure, lists every pending vendor with
+Approve/Reject actions, and lists every active vendor with its owner and
+a live count of orders placed against it. Approving a vendor simply
+flips their account <code>status</code> to <code>active</code>;
+rejecting one flips it to <code>rejected</code> <strong>and</strong>
+deletes that vendor’s business record and every one of their menu items,
+since a rejected vendor should not leave orphaned menu data behind.</p>
+<p><strong>Vendor and menu photography.</strong> Vendor and menu-item
+images are not stored as a database field. Instead, a vendor’s business
+name or a menu item’s name is passed through a <code>slugify()</code>
+helper (exposed to every view via <code>app.locals.slugify</code> in
+<code>server.js</code>) to produce a predictable filename — for example,
+“Swallow — Egusi Soup” becomes <code>swallow-egusi-soup</code> — and the
+page requests <code>/images/menu/swallow-egusi-soup.jpg</code>. Because
+the filename is derived from the dish name rather than from a per-vendor
+record, several vendors selling the same dish (for instance, four
+different vendors all sell “Rice with Chicken”) automatically share one
+photograph instead of requiring a duplicate upload each. If that file
+does not exist, a small client-side helper (<code>imgFallback</code>,
+defined once in the page <code>&lt;head&gt;</code> so it exists before
+any image on the page can trigger it) retries the same base name with
+<code>.jpeg</code>, <code>.png</code>, then <code>.webp</code> in turn,
+and if none of the four exist, removes the broken
+<code>&lt;img&gt;</code> element entirely, revealing an icon placeholder
+that was sitting behind it the whole time. This means a vendor or dish
+with no photo yet degrades to a clean placeholder rather than a
+broken-image icon.</p>
+<h2 id="user-interface-design">4.6 User Interface Design</h2>
+<p>The interface uses a single dark colour palette defined once, in
+<code>tailwind.config.js</code>, and referenced by name everywhere else
+rather than by literal colour values: an orange primary
+(<code>#FF6B35</code>) for calls to action, an amber accent
+(<code>#FFB703</code>), semantic green/red for success and danger
+states, and a small set of near-black background and grey text tones.
+Typography uses two Google Fonts — Poppins for headings, Inter for body
+text — and every reusable interface element (buttons, form fields,
+cards, badges) is defined once as a named component class in
+<code>src/input.css</code> (<code>.btn-primary</code>,
+<code>.btn-secondary</code>, <code>.input-field</code>,
+<code>.card</code>, <code>.badge</code>, and so on) rather than being
+restyled individually on each page, so a button looks and behaves
+identically whether it appears on the login page or the admin dashboard.
+The navigation bar is sticky, collapses to a hamburger menu below the
+tablet breakpoint, and adapts its links to the signed-in user’s
+role.</p>
+<p>The following figures were captured directly from the running
+application using an automated Chrome session, exactly as a real visitor
+would see the page — no image has been edited or mocked up.</p>
+<figure>
+<img src="screenshots/01-landing.png" alt="Figure 4.1: Landing page" />
+<figcaption aria-hidden="true">Figure 4.1: Landing page</figcaption>
+</figure>
+<p><em>Figure 4.1</em> shows the landing page, presented to a visitor
+who is not signed in.</p>
+<figure>
+<img src="screenshots/02-login.png" alt="Figure 4.2: Login page" />
+<figcaption aria-hidden="true">Figure 4.2: Login page</figcaption>
+</figure>
+<p><em>Figure 4.2</em> shows the login page, including the demo-account
+credentials panel used during development and testing.</p>
+<figure>
+<img src="screenshots/03-register.png"
+alt="Figure 4.3: Registration page" />
+<figcaption aria-hidden="true">Figure 4.3: Registration
+page</figcaption>
+</figure>
+<p><em>Figure 4.3</em> shows the registration page in its default state
+(Student role selected).</p>
+<figure>
+<img src="screenshots/03b-register-vendor-fields.png"
+alt="Figure 4.4: Registration page with the Vendor role selected" />
+<figcaption aria-hidden="true">Figure 4.4: Registration page with the
+Vendor role selected</figcaption>
+</figure>
+<p><em>Figure 4.4</em> shows the same registration page immediately
+after the Vendor option is chosen, revealing the business-name and
+description fields described in Section 4.5.</p>
+<figure>
+<img src="screenshots/04-vendors-list.png"
+alt="Figure 4.5: Vendor listing, signed in as a student" />
+<figcaption aria-hidden="true">Figure 4.5: Vendor listing, signed in as
+a student</figcaption>
+</figure>
+<p><em>Figure 4.5</em> shows <code>GET /vendors</code> signed in as the
+demo student account, listing all eight currently active vendors
+described in Table 4.2.</p>
+<figure>
+<img src="screenshots/05-vendor-menu-cart.png"
+alt="Figure 4.6: A vendor’s menu with two items added to the cart" />
+<figcaption aria-hidden="true">Figure 4.6: A vendor’s menu with two
+items added to the cart</figcaption>
+</figure>
+<p><em>Figure 4.6</em> shows the “Just Tools” vendor menu with “Rice
+with Chicken” and “Rice with Beef” added to the cart, the quantity
+steppers that replaced their “Add” buttons, and the order-summary panel
+with a running total of ₦7,500.</p>
+<figure>
+<img src="screenshots/06-orders-tracking.png"
+alt="Figure 4.7: Order tracking page" />
+<figcaption aria-hidden="true">Figure 4.7: Order tracking
+page</figcaption>
+</figure>
+<p><em>Figure 4.7</em> shows the order placed in Figure 4.6 (Order #2)
+on the student’s order-tracking page, with its “Received — waiting for
+vendor” status badge and progress bar.</p>
+<figure>
+<img src="screenshots/07-vendor-dashboard.png"
+alt="Figure 4.8: Vendor dashboard" />
+<figcaption aria-hidden="true">Figure 4.8: Vendor dashboard</figcaption>
+</figure>
+<p><em>Figure 4.8</em> shows the “Just Tools” vendor dashboard with both
+real orders currently in the system — Order #1 and Order #2 — each
+awaiting the vendor’s “Accept order” action.</p>
+<figure>
+<img src="screenshots/08-admin-dashboard.png"
+alt="Figure 4.9: Admin dashboard" />
+<figcaption aria-hidden="true">Figure 4.9: Admin dashboard</figcaption>
+</figure>
+<p><em>Figure 4.9</em> shows the administrator dashboard with the live
+platform counts from Table 4.2, the one pending vendor (“Bola’s Snack
+Corner”) awaiting approval, and the full active-vendor table.</p>
+<h2 id="system-testing">4.7 System Testing</h2>
+<h3 id="unit-testing">4.7.1 Unit Testing</h3>
+<p>No automated unit test suite was implemented for this project —
+<code>package.json</code> defines no <code>test</code> script, and no
+unit-testing framework (such as Jest or Mocha) is present among its
+dependencies. This is stated plainly rather than invented: individual
+functions such as <code>slugify()</code> and the <code>tx()</code>
+persistence helper were exercised only indirectly, through manual and
+system-level testing, not through isolated automated unit tests.</p>
+<h3 id="integration-testing">4.7.2 Integration Testing</h3>
+<p>Integration between the routing layer, the session/authentication
+middleware and the JSON data store was verified manually, using scripted
+HTTP requests (<code>curl</code>) that carried a real session cookie
+through a sequence of calls rather than testing any one route in
+isolation. For example, one verification sequence registered a vendor
+account, confirmed that logging in with it was rejected with a “pending
+approval” message, approved that account from the admin flow, and then
+confirmed the same credentials could log in and reach the vendor
+dashboard — exercising the auth middleware, three separate routers, and
+the data store together in one pass. The automated browser session used
+to capture Section 4.6’s screenshots is itself a second, independent
+integration check: it logs in as three different roles in turn and
+drives each one through a real multi-page flow (browse → add to cart →
+place order → track status; view incoming orders; view admin stats),
+rather than loading pages in isolation. No automated integration-testing
+framework was used; both of the checks above were scripted and run
+manually.</p>
+<h3 id="system-testing-1">4.7.3 System Testing</h3>
+<p>The complete system was exercised end-to-end for all three roles.
+This included: requesting every page while logged out, while logged in
+as a student, while logged in as a vendor, and while logged in as an
+admin, and confirming each returned the expected HTTP status code rather
+than an error page; inspecting the rendered HTML of every page for
+leftover template syntax or server-side errors; confirming that
+appending five new vendors via <code>data/add-new-vendors.js</code> left
+the pre-existing user account and its order completely untouched
+(verified by re-reading <code>data/db.json</code> before and after and
+diffing the user and order counts); and confirming the image fallback
+mechanism in both directions — that a present photo (for example
+<code>rice-with-chicken.jpg</code>) resolves and displays, and that an
+absent one (every vendor photo, none of which had been supplied as of
+this writing) falls back to the placeholder icon rather than a broken
+image. No formal user-acceptance testing with independent test users
+outside the development of this project was carried out, and that is
+reported here rather than presented as having taken place.</p>
+<p><strong>Table 4.3: Summary of testing performed</strong></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Testing type</th>
+<th>Performed?</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit testing</td>
+<td>No</td>
+<td>Not implemented — no test framework in the project</td>
+</tr>
+<tr>
+<td>Integration testing</td>
+<td>Yes (manual)</td>
+<td>Scripted <code>curl</code> sessions across routers; automated
+multi-role browser session</td>
+</tr>
+<tr>
+<td>System testing</td>
+<td>Yes (manual)</td>
+<td>Full-application walkthrough for all three roles; data-integrity
+check before/after a live data change</td>
+</tr>
+<tr>
+<td>User acceptance testing</td>
+<td>No</td>
+<td>No independent test users were involved</td>
+</tr>
+</tbody>
+</table>
+<h2 id="results-and-discussion">4.8 Results and Discussion</h2>
+<p>The system functions end to end: as Table 4.2 and Figures 4.6–4.8
+show, two real orders exist in the live database, both placed against
+the vendor “Just Tools.” Order #1 was placed by a genuinely registered
+student account (Deborah Abraham) for one “Swallow — Banga” at ₦4,500;
+Order #2 was placed during testing for one “Rice with Chicken” and one
+“Rice with Beef,” totalling ₦7,500. Both orders appear correctly on the
+student order-tracking page with a “pending” status and on the vendor
+dashboard as orders awaiting acceptance, which confirms that the
+order-placement, price-snapshot and status-polling mechanisms described
+in Section 4.5 work together correctly on real, not synthetic, data.</p>
+<p>The most significant finding from testing was not a feature bug but
+an environment one: as detailed in Section 4.3, the original CDN-based
+styling approach produced a completely unstyled interface in the actual
+browser used for testing, even though the same markup rendered correctly
+whenever the CDN happened to be reachable. This was only caught because
+the interface was actually opened in a browser and inspected, rather
+than assumed correct from the code; a specific, checkable symptom — a
+<code>hidden</code> element still being visible — made the root cause
+identifiable rather than a guess. Switching to a locally compiled
+stylesheet removed the dependency and was re-verified afterwards by
+confirming, via direct HTTP request, that <code>/css/app.css</code> was
+served with a <code>text/css</code> content type and contained the
+expected compiled class rules.</p>
+<p>Image handling was tested against real files supplied for this
+project. All 33 required menu-item photographs (one per distinct dish
+name across all vendors) were supplied and, once two filenames that did
+not match the expected slug were corrected, all resolve correctly on the
+vendor menu page, as shown in Figure 4.6. None of the nine vendor
+photographs had been supplied as of this writing, so vendor cards across
+the application currently display their icon placeholder rather than a
+photograph; this is reported as the current, honest state of that
+feature rather than as complete, since the fallback mechanism working
+correctly is a distinct result from the photographs themselves being
+present.</p>
+<p>No performance benchmarking, concurrent-load testing, or
+user-satisfaction survey was carried out during this project, and so no
+response-time figures, throughput numbers, or satisfaction percentages
+are reported. Reporting such figures without having measured them would
+misrepresent the testing that was actually done, and Section 4.7 already
+states plainly which forms of testing were and were not performed.</p>
+</body>
+</html>

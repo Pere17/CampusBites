@@ -1,0 +1,13 @@
+id,scenario,input,expected,actual,pass
+T012,Duplicate email registration,email=faith.amadi@campusbites.uat (already registered),"Registration rejected with ""account already exists"" message, no duplicate user created","Rejected: ""An account with that email already exists.""",true
+T013,Registration with missing required fields,"name="""", email="""", password=""""","Registration rejected: ""All fields are required.""",Rejected as expected,true
+T014,Registration with invalid role value,role=superadmin,"Registration rejected: ""Invalid role.""",Rejected as expected,true
+T015,Vendor registration without business name,"role=vendor, businessName=(missing)","Registration rejected: ""Business name is required for vendors.""",Rejected as expected,true
+T018,Login attempt by vendor whose account is still pending approval,email=northgategrills@campusbites.uat,"Login rejected: ""Your vendor account is still pending admin approval.""",Rejected as expected,true
+T019,Login with incorrect password,"email=faith.amadi@campusbites.uat, password=WrongPassword1","Login rejected: ""Invalid email or password.""",Rejected as expected,true
+T020,Login with non-existent email,email=doesnotexist@campusbites.uat,"Login rejected: ""Invalid email or password.""",Rejected as expected,true
+T027,Request menu for non-existent vendor ID,GET /vendors/999999,404 Vendor not found,"status 404, body=""Vendor not found""",true
+T030,Order submission with empty cart,items=[],"400 ""Cart is empty""","status 400, body=""Cart is empty""",true
+T031,Order submission with malformed cart JSON,"items=""not-json""","400 ""Invalid cart data""","status 400, body=""Invalid cart data""",true
+T032,Order submission for non-existent vendor,vendorId=999999,"400 ""Vendor not found""","status 400, body=""Vendor not found""",true
+T040,Advance status of non-existent order ID,POST /vendor/orders/999999/advance,No crash; silently no-ops and redirects back to dashboard (no explicit 404 handling in current implementation),status 200,true

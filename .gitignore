@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.local
+*.log
+npm-debug.log*
+dist/
+build/
+Stephen Ch1-3.docx

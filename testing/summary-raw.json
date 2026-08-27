@@ -1,0 +1,135 @@
+{
+  "summary": [
+    {
+      "name": "Unit",
+      "total": 21,
+      "scored": 21,
+      "passed": 20,
+      "failed": 1,
+      "notApplicable": 0,
+      "rate": "95.2"
+    },
+    {
+      "name": "Integration",
+      "total": 3,
+      "scored": 3,
+      "passed": 3,
+      "failed": 0,
+      "notApplicable": 0,
+      "rate": "100.0"
+    },
+    {
+      "name": "System",
+      "total": 5,
+      "scored": 3,
+      "passed": 2,
+      "failed": 1,
+      "notApplicable": 2,
+      "rate": "66.7"
+    },
+    {
+      "name": "Negative/Error",
+      "total": 12,
+      "scored": 12,
+      "passed": 12,
+      "failed": 0,
+      "notApplicable": 0,
+      "rate": "100.0"
+    },
+    {
+      "name": "Security",
+      "total": 13,
+      "scored": 12,
+      "passed": 12,
+      "failed": 0,
+      "notApplicable": 1,
+      "rate": "100.0"
+    }
+  ],
+  "perf": [
+    {
+      "id": "T055",
+      "operation": "POST /login (valid admin credentials)",
+      "runs": "20",
+      "avg": "57.04",
+      "min": "35.14",
+      "max": "117.43",
+      "result": "PASS (<1s)"
+    },
+    {
+      "id": "T056",
+      "operation": "GET /vendors (menu/vendor list load)",
+      "runs": "20",
+      "avg": "29.06",
+      "min": "17.04",
+      "max": "38.54",
+      "result": "PASS (<1s)"
+    },
+    {
+      "id": "T057",
+      "operation": "GET /vendors/:id (single vendor menu load)",
+      "runs": "20",
+      "avg": "31.26",
+      "min": "23.09",
+      "max": "41.10",
+      "result": "PASS (<1s)"
+    },
+    {
+      "id": "T058",
+      "operation": "GET /api/orders/mine (order tracking poll)",
+      "runs": "20",
+      "avg": "13.67",
+      "min": "8.72",
+      "max": "19.01",
+      "result": "PASS (<1s)"
+    },
+    {
+      "id": "T059",
+      "operation": "GET /api/vendor/orders (vendor dashboard poll)",
+      "runs": "20",
+      "avg": "16.04",
+      "min": "9.17",
+      "max": "24.99",
+      "result": "PASS (<1s)"
+    },
+    {
+      "id": "T060",
+      "operation": "GET /admin/dashboard (admin stats load)",
+      "runs": "20",
+      "avg": "26.08",
+      "min": "19.48",
+      "max": "33.95",
+      "result": "PASS (<1s)"
+    },
+    {
+      "id": "T061",
+      "operation": "POST /orders (order submission, measured across 40 real order placements above)",
+      "runs": "40",
+      "avg": "37.13",
+      "min": "21.74",
+      "max": "50.11",
+      "result": "PASS (<1s)"
+    },
+    {
+      "id": "T062",
+      "operation": "POST /vendor/orders/:id/advance (order status update, measured across 60 real status transitions above)",
+      "runs": "60",
+      "avg": "39.81",
+      "min": "17.69",
+      "max": "82.40",
+      "result": "PASS (<1s)"
+    }
+  ],
+  "users": 23,
+  "vendors": 10,
+  "items": 68,
+  "orders": 40,
+  "statusCounts": {
+    "pending": 10,
+    "preparing": 10,
+    "ready": 10,
+    "completed": 10
+  },
+  "revenue": 76400,
+  "totalOrderValue": 328900
+}

@@ -1,0 +1,104 @@
+<%- include('partials/header') %>
+
+<div class="mb-8">
+  <h1 class="font-display text-2xl font-bold text-ink">Admin dashboard</h1>
+  <p class="text-sm text-ink3 mt-1">Platform overview and vendor approvals.</p>
+</div>
+
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+  <div class="card p-5 flex items-center gap-4 shadow-soft">
+    <span class="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center text-primary shrink-0"><i data-lucide="graduation-cap" style="width:20px;height:20px"></i></span>
+    <div>
+      <p class="text-2xl font-display font-bold text-ink"><%= stats.totalStudents %></p>
+      <p class="text-xs text-ink3">Students</p>
+    </div>
+  </div>
+  <div class="card p-5 flex items-center gap-4 shadow-soft">
+    <span class="w-11 h-11 rounded-xl bg-success/15 flex items-center justify-center text-success shrink-0"><i data-lucide="store" style="width:20px;height:20px"></i></span>
+    <div>
+      <p class="text-2xl font-display font-bold text-ink"><%= stats.totalVendors %></p>
+      <p class="text-xs text-ink3">Active vendors</p>
+    </div>
+  </div>
+  <div class="card p-5 flex items-center gap-4 shadow-soft">
+    <span class="w-11 h-11 rounded-xl bg-accent/15 flex items-center justify-center text-accent shrink-0"><i data-lucide="hourglass" style="width:20px;height:20px"></i></span>
+    <div>
+      <p class="text-2xl font-display font-bold text-ink"><%= stats.pendingVendors %></p>
+      <p class="text-xs text-ink3">Pending approvals</p>
+    </div>
+  </div>
+  <div class="card p-5 flex items-center gap-4 shadow-soft">
+    <span class="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center text-primary shrink-0"><i data-lucide="receipt" style="width:20px;height:20px"></i></span>
+    <div>
+      <p class="text-2xl font-display font-bold text-ink"><%= stats.totalOrders %></p>
+      <p class="text-xs text-ink3">Total orders</p>
+    </div>
+  </div>
+</div>
+
+<h2 class="font-display text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+  <i data-lucide="user-check" style="width:18px;height:18px" class="text-primary"></i> Pending vendor approvals
+</h2>
+<% if (pendingVendors.length === 0) { %>
+  <div class="card p-8 text-center mb-10">
+    <p class="text-ink3 text-sm">No pending approvals.</p>
+  </div>
+<% } else { %>
+  <div class="space-y-3 mb-10">
+    <% pendingVendors.forEach(({ user, vendor }) => { %>
+      <div class="card p-4 flex items-center justify-between gap-4 flex-wrap shadow-soft">
+        <div class="flex items-center gap-3 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center text-accent shrink-0"><i data-lucide="chef-hat" style="width:18px;height:18px"></i></span>
+          <div class="min-w-0">
+            <p class="font-semibold text-ink truncate"><%= vendor ? vendor.businessName : user.name %></p>
+            <p class="text-xs text-ink3 truncate"><%= user.name %> — <%= user.email %></p>
+            <% if (vendor && vendor.description) { %><p class="text-sm text-ink2 mt-1"><%= vendor.description %></p><% } %>
+          </div>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <form method="POST" action="/admin/vendors/<%= user.id %>/approve">
+            <button class="btn-primary !bg-success hover:!bg-success !px-4 !py-2 text-sm hover:!brightness-110">
+              <i data-lucide="check" style="width:15px;height:15px"></i> Approve
+            </button>
+          </form>
+          <form method="POST" action="/admin/vendors/<%= user.id %>/reject">
+            <button class="btn-danger !px-4 !py-2 text-sm">
+              <i data-lucide="x" style="width:15px;height:15px"></i> Reject
+            </button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<h2 class="font-display text-lg font-semibold text-ink mb-4 flex items-center gap-2">
+  <i data-lucide="store" style="width:18px;height:18px" class="text-primary"></i> Active vendors
+</h2>
+<div class="card overflow-hidden shadow-soft">
+  <div class="overflow-x-auto scrollbar-thin">
+    <table class="w-full text-sm">
+      <thead class="bg-surface text-ink2">
+        <tr>
+          <th class="text-left px-4 py-3 font-medium">Business</th>
+          <th class="text-left px-4 py-3 font-medium">Owner</th>
+          <th class="text-left px-4 py-3 font-medium">Orders</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (activeVendors.length === 0) { %>
+          <tr><td colspan="3" class="px-4 py-6 text-center text-ink3">No active vendors yet.</td></tr>
+        <% } %>
+        <% activeVendors.forEach(({ user, vendor, orderCount }) => { %>
+          <tr class="border-t border-line hover:bg-surface/60 transition-colors">
+            <td class="px-4 py-3 font-medium text-ink"><%= vendor ? vendor.businessName : '—' %></td>
+            <td class="px-4 py-3 text-ink2"><%= user.name %> <span class="text-ink3">(<%= user.email %>)</span></td>
+            <td class="px-4 py-3"><span class="badge bg-primary/15 text-primary"><%= orderCount %></span></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

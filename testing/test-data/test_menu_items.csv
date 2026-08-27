@@ -1,0 +1,69 @@
+item_id,vendor_id,item_name,price
+1,1,Rice with Chicken,4500
+2,1,Rice with Beef,3000
+3,1,Soft Drinks,600
+4,1,Bottle Water,400
+5,1,Spaghetti with Chicken,4500
+6,1,Spaghetti with Egg,3500
+7,1,Spaghetti with Beef,3000
+8,1,Swallow — Egusi Soup,4500
+9,1,Swallow — Okro Soup,4500
+10,1,Swallow — Vegetable,4500
+11,1,Swallow — Banga,4500
+12,2,Rice with Chicken,4500
+13,2,Rice with Beef,2500
+14,2,Bottle Water,300
+15,2,Spaghetti with Chicken,4500
+16,2,Spaghetti with Egg,2500
+17,2,Spaghetti with Beef,2000
+18,2,Swallow — Egusi Soup,3500
+19,2,Swallow — Okro Soup,3500
+20,2,Swallow — Vegetable,3500
+21,2,Swallow — Banga,3500
+22,3,Rice with Chicken,4500
+23,3,Rice with Big Chicken,8000
+24,3,Rice with Beef,3500
+25,3,Soft Drinks,600
+26,3,Bottle Water,400
+27,3,Spaghetti with Chicken,4500
+28,3,Spaghetti with Egg,3500
+29,3,Spaghetti with Beef,3000
+30,3,Swallow — Egusi Soup,4500
+31,3,Swallow — Vegetable,4500
+32,3,Snack — Meatpie,1000
+33,3,Snack — Chicken Bread,1000
+34,3,Snack — Milky Doughnuts,1000
+35,3,Snack — Sausage Roll,1000
+36,4,Beef Suya,1500
+37,4,Chicken Suya,1500
+38,4,Turkey Suya,2000
+39,4,Suya Wrap,2000
+40,4,Soft Drinks,600
+41,4,Bottle Water,400
+42,5,Snack — Meatpie,1000
+43,5,Snack — Chicken Bread,1000
+44,5,Snack — Sausage Roll,1000
+45,5,Snack — Milky Doughnuts,1000
+46,5,Cupcake,800
+47,5,Bread Loaf,1200
+48,6,Swallow — Egusi Soup,4500
+49,6,Swallow — Okro Soup,4500
+50,6,Swallow — Vegetable,4500
+51,6,Amala & Ewedu,3500
+52,6,Pounded Yam & Egusi,4000
+53,6,Bottle Water,400
+54,7,Zobo (bottle),500
+55,7,Chapman,700
+56,7,Fresh Smoothie,1200
+57,7,Iced Coffee,1000
+58,7,Soft Drinks,600
+59,7,Bottle Water,400
+60,8,Jollof Rice,3000
+61,8,Fried Rice,3000
+62,8,Coconut Rice,3500
+63,8,Rice with Chicken,4500
+64,8,Rice with Beef,3000
+65,8,Soft Drinks,600
+66,9,Puff Puff (5pcs),500
+67,9,Chin Chin (cup),500
+68,9,Zobo (bottle),500

@@ -1,0 +1,14 @@
+id,check,input,expected,actual,pass
+T024,Rejected vendor account access after rejection,login as adasmallchops@campusbites.uat after admin rejection,"Ideally blocked; app only special-cases status=""pending"", not ""rejected""","Login succeeded (session created) — app does NOT block ""rejected"" vendors from logging in, only ""pending"" ones. Their vendor profile is deleted so /vendor/dashboard responds 404 ""Vendor profile not found"".",
+T033,Unauthenticated order submission,POST /orders with no session cookie,"Redirect to /login (requireRole guard), no order created","status 302, Location=/login",true
+T035,Order-list isolation between students,student faith.amadi@campusbites.uat fetches /api/orders/mine,Only orders where studentId matches the session user are returned,"5 orders returned, all belong to requester = true",true
+T039,Cross-vendor order tampering,"vendor ""Just Tools"" attempts to advance order #1 belonging to ""Lari's Kitchen""",No-op: order.vendorId !== session vendor.id guard prevents the change,"status before=""pending"", after=""pending"" (unchanged=true)",true
+T043,Student attempts to access vendor dashboard,GET /vendor/dashboard as faith.amadi@campusbites.uat (role=student),"403 Forbidden (requireRole(""vendor"") guard)",status 403,true
+T044,Student attempts to access admin dashboard,GET /admin/dashboard as faith.amadi@campusbites.uat (role=student),403 Forbidden,status 403,true
+T045,Vendor attempts to access admin dashboard,GET /admin/dashboard as an approved vendor (role=vendor),403 Forbidden,status 403,true
+T046,Unauthenticated access to protected student route,GET /vendors with no session cookie,Redirect to /login,"status 302, Location=/login",true
+T047,Unauthenticated access to vendor API,GET /api/vendor/orders with no session cookie,Redirect to /login,"status 302, Location=/login",true
+T048,Non-admin attempts vendor-approval action,student POSTs /admin/vendors/10/approve,403 Forbidden,status 403,true
+T049,Password storage format,inspect stored passwordHash for faith.amadi@campusbites.uat,"Password stored as a bcrypt hash, never in plaintext","passwordHash=""$2a$08$CYP..."" bcrypt-format=true, equals plaintext=false",true
+T050,Stored XSS via vendor business name (EJS output encoding),"businessName=""<script>alert('xss')</script>""",EJS <%= %> auto-escapes output; raw <script> tag must not appear unescaped in rendered HTML,"raw payload present=false, escaped form present=true",true
+T051,Direct access to database file via static server,GET /db.json and /data/db.json,"Both 404 — /data is not inside the express.static(""public"") root, so db.json (containing password hashes) is not web-accessible","/db.json=404, /data/db.json=404",true
